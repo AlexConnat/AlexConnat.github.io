@@ -19,7 +19,7 @@
         
             <copyright>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)</copyright>
         
-        <lastBuildDate>Fri, 22 May 2020 17:56:46 &#43;0200</lastBuildDate>
+        <lastBuildDate>Fri, 22 May 2020 18:03:27 &#43;0200</lastBuildDate>
         
             <atom:link rel="self" type="application/rss&#43;xml" href="https://alexconnat.github.io/rss.xml" />
         
@@ -485,6 +485,26 @@ uid=0(root) gid=0(root) groups=0(root),100(users),1000(theseus)
                 
                 
                     
+                        
+                            
+                                
+                                
+                                
+                                    <category domain="https://alexconnat.github.io/categories/hacking/">Hacking</category>
+                                
+                            
+                                
+                                
+                                
+                                    <category domain="https://alexconnat.github.io/categories/write-ups/">Write-Ups</category>
+                                
+                            
+                                
+                                
+                                
+                                    <category domain="https://alexconnat.github.io/categories/htb/">HTB</category>
+                                
+                            
                         
                     
                         
