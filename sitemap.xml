@@ -4,37 +4,37 @@
   
   <url>
     <loc>https://alexconnat.github.io/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-07-09T19:39:09+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/categories/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-05-26T23:00:50+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/categories/hacking/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-05-26T23:00:50+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/categories/htb/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-05-26T23:00:50+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/posts/write-up-magic/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-05-26T23:00:50+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/posts/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-07-09T19:39:09+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://alexconnat.github.io/categories/write-ups/</loc>
-    <lastmod>2020-05-22T18:01:24+02:00</lastmod>
+    <lastmod>2020-05-26T23:00:50+02:00</lastmod>
   </url>
   
   <url>
@@ -45,6 +45,11 @@
   <url>
     <loc>https://alexconnat.github.io/posts/hello-world/</loc>
     <lastmod>2020-05-20T18:43:11+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://alexconnat.github.io/posts/move-rootfs-partition-to-usb-drive-on-rpi/</loc>
+    <lastmod>2020-07-09T19:39:09+02:00</lastmod>
   </url>
   
   <url>

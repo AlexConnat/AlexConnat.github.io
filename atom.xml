@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title type="text">Alex Connat | Blog</title>
     <subtitle type="html">Personal Blog of Alex Connat</subtitle>
-    <updated>2020-05-22T18:03:27&#43;02:00</updated>
+    <updated>2020-07-09T19:43:10&#43;02:00</updated>
     <id>https://alexconnat.github.io/</id>
     <link rel="alternate" type="text/html" href="https://alexconnat.github.io/" />
     <link rel="self" type="application/atom&#43;xml" href="https://alexconnat.github.io/atom.xml" />
@@ -18,7 +18,7 @@
             <title type="text">HTB Write-Up - Magic</title>
             <link rel="alternate" type="text/html" href="https://alexconnat.github.io/posts/write-up-magic/" />
             <id>https://alexconnat.github.io/posts/write-up-magic/</id>
-            <updated>2020-05-22T18:01:24&#43;02:00</updated>
+            <updated>2020-05-26T23:00:50&#43;02:00</updated>
             <published>2020-05-20T18:00:00&#43;02:00</published>
             <author>
                     <name>Alex Connat</name>
@@ -53,7 +53,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;We start by browsing the website http://10.10.10.185, we land on a page with a gallery of images. At the bottom of the website, a link redirects it to a login portal.&lt;/p&gt;
+&lt;p&gt;We start by browsing the website http://10.10.10.185, we land on a page with a gallery of images. At the bottom of the website, a link redirects us to a login portal.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&#34;/img/Write-Up-Magic/website-landpage.png&#34; alt=&#34;website-landpage&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Nothing in the HTML source of the page seems to indicate a potential CMS in use, and we did not find any hidden information as HTML comments either. So our best chance is to use &lt;code&gt;gobuster&lt;/code&gt; to discover some hidden directories.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -537,6 +537,90 @@ uid=0(root) gid=0(root) groups=0(root),100(users),1000(theseus)
 &lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 &lt;/div&gt;
 &lt;/div&gt;&lt;p&gt;It &lt;strong&gt;seems&lt;/strong&gt; like so!&lt;/p&gt;
+</content>
+            
+            
+            
+            
+            
+                
+                    
+                
+                    
+                
+            
+        </entry>
+    
+        <entry>
+            <title type="text">Tutorial: How to move the rootfs partition on a Raspberry Pi to a USB flash drive</title>
+            <link rel="alternate" type="text/html" href="https://alexconnat.github.io/posts/move-rootfs-partition-to-usb-drive-on-rpi/" />
+            <id>https://alexconnat.github.io/posts/move-rootfs-partition-to-usb-drive-on-rpi/</id>
+            <updated>2020-07-09T19:39:09&#43;02:00</updated>
+            <published>2019-11-19T18:00:00&#43;02:00</published>
+            <author>
+                    <name>Alex Connat</name>
+                    <uri>https://alexconnat.github.io/</uri>
+                    </author>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)</rights><summary type="html">I own a Raspberry Pi 3 model B+ and I came across a problem that I didn&amp;rsquo;t see that often: I wanted to move the rootfs partition (that is to say, the location on which the root filesystem is physically located) from the SD card, to a USB flash drive.</summary>
+            
+                <content type="html">&lt;p&gt;I own a Raspberry Pi 3 model B+ and I came across a problem that I didn&amp;rsquo;t see that often: I wanted to move the rootfs partition (that is to say, the location on which the root filesystem is physically located) from the SD card, to a USB flash drive.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;NB:&lt;/strong&gt; In this tutorial, I do not change the boot mode of the Raspberry Pi, meaning that it will &lt;strong&gt;still&lt;/strong&gt; boot from the SD card, but it will mount the linux filesystem on the USB drive.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;A Raspberry Pi traditionally boots from a SD card, and has two partitions on this card: the &lt;code&gt;boot&lt;/code&gt; partition (quite small) and the &lt;code&gt;rootfs&lt;/code&gt; partition (that takes up the remaining storage space of the SD card). I wanted to move this rootfs partition to the USB drive, to make use of its bigger storage space.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In my case, when I bought and set up my RPi, I just used an old 2GB SD card, and I thought it would be enough to support a light operating system like Raspbian. Unfortunately, I quickly realised that to store additional binaries and install some more libraries (thus, creating files in &lt;code&gt;/opt&lt;/code&gt;, in &lt;code&gt;/etc&lt;/code&gt; and some additional log files in &lt;code&gt;/var/log&lt;/code&gt;), my 2 Gigabytes were not enough&amp;hellip;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;You can plug a USB drive, or an external drive to increase your storage space (for instance, for storing pictures, or movies), but this will never &lt;strong&gt;replace&lt;/strong&gt; having a bigger rootfs partition, i.e more space for the OS to use. As I only found very few references online that showed the steps to do so, I decided to write my own tutorial.&lt;/p&gt;
+&lt;p&gt;I had this useless 16GB USB drive lying around, and I thought it would be the perfect candidate to replace this old 2GB SD card.&lt;/p&gt;
+&lt;p&gt;Without further ado, let&amp;rsquo;s jump straight in! Here are the steps I followed:&lt;/p&gt;
+&lt;h3 id=&#34;1-turn-on-your-rpi-with-only-the-sd-card-plugged-in&#34;&gt;1) Turn on your RPi with only the SD Card plugged in&lt;/h3&gt;
+&lt;p&gt;Till now, no big deal. It should boot normally, as you&amp;rsquo;re used to.&lt;/p&gt;
+&lt;h3 id=&#34;2-plug-your-empty-drive-inside-the-rpi&#34;&gt;2) Plug your (empty) drive inside the RPi&lt;/h3&gt;
+&lt;p&gt;You can list the disks using the command &lt;code&gt;lsblk&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;It should be recognized as &lt;code&gt;/dev/sda&lt;/code&gt;, and (if you never used it) should only have 1 full partition: &lt;code&gt;/dev/sda1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;If it&amp;rsquo;s a USB drive or an external drive that you already used, you can wipe it and format it, but it shouldn&amp;rsquo;t make a difference as the next step will wipe it and format it anyways!&lt;/p&gt;
+&lt;h3 id=&#34;3-backup-your-current-filesystem-from-the-sd-card-to-the-new-drive-using-dd&#34;&gt;3) Backup your current filesystem from the SD card to the new drive using &lt;code&gt;dd&lt;/code&gt;&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;dd if=/dev/mmcblk0 of=/dev/sda bs=4M status=progress
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This command will copy the whole state and content of your current filesystem from the SD card to your newly plugged drive. It could take some time to complete.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;As a sanity check: if you run &lt;code&gt;lsblk&lt;/code&gt; and &lt;code&gt;sudo blkid&lt;/code&gt;, you should now see that &lt;code&gt;/dev/sda1&lt;/code&gt; and &lt;code&gt;/dev/sda2&lt;/code&gt; on your USB drive perfectly replicate the &lt;u&gt;boot&lt;/u&gt; and &lt;u&gt;rootfs&lt;/u&gt; partitions &lt;code&gt;/dev/mmcblk0p0&lt;/code&gt; and &lt;code&gt;/dev/mmcblk0p1&lt;/code&gt; from the SD card.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;WARNING:&lt;/strong&gt; There is (or might be) still be a problem: In most cases, &lt;code&gt;dd&lt;/code&gt; &lt;u&gt;exactly&lt;/u&gt; replicate the partitions, meaning that they might still have &lt;u&gt;the same PARTUUID&lt;/u&gt;&amp;hellip;
+As its name indicates, this UUID needs to be.. well.. unique! The first reason being that it is &lt;em&gt;this ID&lt;/em&gt; that you give to the operating system while booting, in order to decide &lt;u&gt;which&lt;/u&gt; disk to use to mount the filesystem on.&lt;/p&gt;
+&lt;h3 id=&#34;4-change-the-partuuid-of-devsda-using-fdisk&#34;&gt;4) Change the PARTUUID of &lt;code&gt;/dev/sda&lt;/code&gt; using &lt;code&gt;fdisk&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;In my case, the PARTUUID for both disks was &lt;code&gt;9b1c6f5e&lt;/code&gt;. I will change the one from my USB drive to &lt;code&gt;d3adb33f&lt;/code&gt; (because why not) using the advanced options of the cmd line utility &lt;code&gt;fdisk&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo fdisk /dev/sda
+x  # expert options
+i  # change the disk identifier
+&amp;lt;enter the new partuuid in decimal&amp;gt; (here we enter 3551376191, the decimal value of 0xd3adb33f)
+r
+w
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;5-change-the-rootfs-partuuid-in-bootcmdlinetxt&#34;&gt;5) Change the rootfs PARTUUID in &lt;code&gt;/boot/cmdline.txt&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;This file, in &lt;code&gt;/boot&lt;/code&gt; (the boot partition on the SD card) tells the system to mount the linux root filesystem on the disk with given PARTUUID.&lt;/p&gt;
+&lt;p&gt;So, in this file, instead of:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID=9b1c6f5e-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We will write:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID=d3adb33f-02 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+&lt;/code&gt;&lt;/pre&gt;&lt;blockquote&gt;
+&lt;p&gt;Just in case you want to revert your initial configuration, you can save the old cmdline file as &lt;code&gt;cmdline.txt.bak&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;6-reboot-the-rpi&#34;&gt;6) Reboot the RPi&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;sudo reboot
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;This will safely reboot the device. It will boot from the SD card (as always), but then, mount the root filesystem onto your new USB drive, as intended. From now on, make sure to leave it plugged at all time on the same USB port.&lt;/p&gt;
+&lt;h3 id=&#34;7-expand-the-filesystem-partition&#34;&gt;7) Expand the filesystem partition&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Last little problem: Our SD card was &lt;strong&gt;2GB&lt;/strong&gt;, and &lt;code&gt;dd&lt;/code&gt; copied it &lt;u&gt;identically&lt;/u&gt;, making the new partition on the USB drive.. also 2GB! We want to expand our partition so that it occupies all the (e.g 16GB) of our USB drive&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;There is an option to do that in &lt;code&gt;raspi-config&lt;/code&gt; : If you go to &amp;ldquo;Advanced Options &amp;gt; Expand Filesystem&amp;rdquo;.&lt;/p&gt;
+&lt;p&gt;However, you should get a warning &lt;em&gt;&amp;quot;/dev/sda is not on a SD card, cannot expand filesystem&amp;rdquo;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This is because the name of partition for the SD card is hardcoded in the &lt;code&gt;raspi-config&lt;/code&gt; script, and that you&amp;rsquo;re not supposed to mount your filesystem on something &lt;strong&gt;else&lt;/strong&gt;. However, we can circumvent this limitation by just running a few lines:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cp /usr/bin/raspi-config ~    						# Copy the raspi-config script in your home folder
+sed -i &#39;s/mmcblk0p/sda/&#39; ~/raspi-config
+sed -i &#39;s/mmcblk0/sda/&#39; ~/raspi-config    # Substitute mmcblk0 for sda everywhere
+sudo ~/raspi-config                       # Run it, and Profit :)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&#34;8-there-is-no-step-8&#34;&gt;8) There is no Step 8&lt;/h3&gt;
+&lt;p&gt;Voilà! You now have a bigger amount of space to put all your libraries and binaries on!&lt;/p&gt;
 </content>
             
             
