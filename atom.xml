@@ -4,7 +4,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
     <title type="text">Alex Connat | Blog</title>
     <subtitle type="html">Personal Blog of Alex Connat</subtitle>
-    <updated>2020-07-09T19:47:55&#43;02:00</updated>
+    <updated>2020-08-04T17:41:25&#43;02:00</updated>
     <id>https://alexconnat.github.io/</id>
     <link rel="alternate" type="text/html" href="https://alexconnat.github.io/" />
     <link rel="self" type="application/atom&#43;xml" href="https://alexconnat.github.io/atom.xml" />
@@ -583,6 +583,540 @@ sudo ~/raspi-config                       # Run it, and Profit :)
             
             
                 
+                    
+                
+                    
+                
+            
+        </entry>
+    
+        <entry>
+            <title type="text">A Differentially-Private Decentralized Machine Learning Framework</title>
+            <link rel="alternate" type="text/html" href="https://alexconnat.github.io/posts/master-thesis/" />
+            <id>https://alexconnat.github.io/posts/master-thesis/</id>
+            <updated>2020-08-04T17:38:51&#43;02:00</updated>
+            <published>2019-09-10T18:00:00&#43;02:00</published>
+            <author>
+                    <name>Alex Connat</name>
+                    <uri>https://alexconnat.github.io/</uri>
+                    </author>
+            <rights>[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)</rights><summary type="html">​ Master&amp;rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat
+Introduction - Outline In this article, I will try to give the reader a high overview of my Master Thesis: &amp;ldquo;A Differentially-Private Decentralized Machine Learning Framework&amp;rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich.</summary>
+            
+                <content type="html">&lt;hr&gt;
+&lt;p&gt;​                                                                                                   Master&amp;rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat&lt;/p&gt;
+&lt;h2 id=&#34;introduction---outline&#34;&gt;Introduction - Outline&lt;/h2&gt;
+&lt;p&gt;In this article, I will try to give the reader a high overview of my Master Thesis: &amp;ldquo;A Differentially-Private Decentralized Machine Learning Framework&amp;rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich.&lt;/p&gt;
+&lt;p&gt;There are three important part in this somewhat complicated title, that I will try to break down and explain in simpler terms:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;First, we will describe what &amp;ldquo;&lt;strong&gt;Decentralized Machine Learning&lt;/strong&gt;&amp;rdquo; means, and why is it currently such a &amp;ldquo;hot&amp;rdquo; topic.&lt;/li&gt;
+&lt;li&gt;Second, we will discuss the notion of &amp;ldquo;&lt;strong&gt;Differential Privacy&lt;/strong&gt;&amp;quot;, and explain why it is important and relevant to us.&lt;/li&gt;
+&lt;li&gt;Finally, we will talk about how we combined both of these things in &lt;strong&gt;one system&lt;/strong&gt;, show how our approach compares to existing methods, and consider how it can be further improved.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;decentralized-machine-learning&#34;&gt;Decentralized Machine Learning&lt;/h2&gt;
+&lt;p&gt;I do not think I have to re-emphasize how important &lt;a href=&#34;https://en.wikipedia.org/wiki/Machine_learning&#34;&gt;Machine Learning&lt;/a&gt; (or ML for short) has become in today&amp;rsquo;s society. It is used in virtually every field, or any sector of the industry: supply chain, medicine, finance, … you name it!&lt;/p&gt;
+&lt;p&gt;Of course, to train a Machine Learning model, you need… some &lt;strong&gt;data&lt;/strong&gt;!
+And the more precise this data is, the more accurate your model will be.&lt;/p&gt;
+&lt;p&gt;However, in certain fields, like medicine for instance, this data could be highly sensitive. Imagine a dataset of people suffering from Cancer, used to train medical predictive models.
+But you can also think of private industrial processes, or financial figures, that you would not want to see out there, in the wild!&lt;/p&gt;
+&lt;p&gt;And finally, in the case of these big Technology companies, like Facebook or Google: you are the product, and you are also the data creator. Facebook might want to train their speech recognition system on your voice messages, but… these messages are inherently private, and first and foremost, belong to you.&lt;/p&gt;
+&lt;p&gt;In parallel, as we see today, there is a big incentive to decentralize the Machine Learning training process. And here, by &amp;ldquo;decentralizing&amp;rdquo; I do not mean run ML algorithms on different nodes, but rather having the training data taken away from the computation source.&lt;/p&gt;
+&lt;p&gt;There are actually &lt;strong&gt;two&lt;/strong&gt; big incentives to do so:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The first one being when companies do not posess the in-house ressources (or even knowledge) to run their own analytics on their data. They tend to assign this task to a cloud providers (like &lt;a href=&#34;https://aws.amazon.com/fr/sagemaker/&#34;&gt;Amazon&lt;/a&gt;, &lt;a href=&#34;https://www.microsoft.com/en-us/research/project/automl/&#34;&gt;Microsoft&lt;/a&gt;, &lt;a href=&#34;https://cloud.google.com/automl/&#34;&gt;Google&lt;/a&gt;, &amp;hellip;) to run these expensive ML algorithm for them.
+$\rightarrow$ This is a slightly related but a separated concern from ours, and it is often refered in the litterature as &amp;ldquo;&lt;strong&gt;Outsourced Computation&lt;/strong&gt;&amp;quot;.&lt;/li&gt;
+&lt;li&gt;The second one is the one we are most interested in: when you want to run analytics on data that is spread across several different locations (i.e, machines, devices). The problem becomes particularly interesting when we cannot trust any entity to centrally aggregate all that data in one place.
+$\rightarrow$ This problem of computing something with distant agents that do not neccesarily trust each others is refered as &amp;ldquo;&lt;strong&gt;Secure Computation&lt;/strong&gt;&amp;quot;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This last problem is exactly the one we discussed above, about big tech companies. Say you are willing to let Facebook train their algorithms on your voice messages. Still, you hope there is a way for them to extract the knowledge from these messages, without learning anything in particular that could directly identify you. And above all, you do not want to send them directly these messages! You don&amp;rsquo;t trust them. This would completely violate your privacy.&lt;/p&gt;
+&lt;p&gt;Nevertheless, this is currently what is happening, as the scandals from these past weeks show us, despite Mark&amp;rsquo;s reassuring statements during his last keynote on April 11: &lt;br&gt;
+11/04/2019 - &lt;a href=&#34;https://www.independent.co.uk/life-style/gadgets-and-tech/news/amazon-alexa-echo-listening-spy-security-a8865056.html&#34;&gt;Amazon admits employees listen to Alexa conversations&lt;/a&gt; / &lt;a href=&#34;https://www.forbes.com/sites/davidphelan/2019/04/12/amazon-confirms-staff-listen-to-alexa-conversations-heres-all-you-need-to-know/#6b979f8c5d9d&#34;&gt;Why does it matter&lt;/a&gt; &lt;br&gt;
+13/08/2019 - &lt;a href=&#34;https://www.theguardian.com/technology/2019/aug/13/facebook-messenger-user-recordings-contractors-listening&#34;&gt;Facebook admits contractors listened to users&amp;rsquo; recordings without their knowledge&lt;/a&gt; &lt;br&gt;
+15/08/2019 - &lt;a href=&#34;https://techcrunch.com/2019/08/15/daily-crunch-microsoft-admits-humans-can-listen-to-skype-cortana-audio/&#34;&gt;Microsoft admits humans can listen to Skype, Cortana audio&lt;/a&gt; &lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/Master-Thesis/marc-privacy.jpg&#34; width=&#34;600px&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;This is the first of two concerns in Decentralized Machine Learning, that I will call &amp;ldquo;input privacy&amp;rdquo; (or input &lt;em&gt;secrecy&lt;/em&gt;). The second one being the &amp;ldquo;differential privacy&amp;rdquo; of the model, that we will dicuss in more details later on.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note that here, &amp;ldquo;input&amp;rdquo; has to be taken in the broader sense of &amp;ldquo;&lt;em&gt;whatever enters into the ML system&lt;/em&gt;&amp;quot;, and does not necessarily mean the raw data (your raw voice message, in the above example). For instance, if the raw data is a simple integer $x$, the input to the ML system could be a function $h(x)$ which computes $x \  \text{mod} \ 2$. Here, the evil server observing the input just sees a &amp;ldquo;0&amp;rdquo; or &amp;ldquo;1&amp;rdquo;, but it can still know the parity of $x$, and that is already a leakage, that combined with additional information might lead to a real compromision of a user&amp;rsquo;s privacy.&lt;/p&gt;
+&lt;p&gt;Protecting not only the raw input itself, but also everything that have been infered from it, is of paramount importance. For instance, as we will see later in the article, in Distributed Stochastic Gradient Descent, the input to the DML system would be a gradient vector. But as we will see afterwards, even a simple gradient could leak a lot of information on the data it has been computed upon. In some very simple case, you can imagine the gradient as just a scaled version of the raw data.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;What I will call &lt;strong&gt;input privacy&lt;/strong&gt; is when you want to protect the secrecy or at least the privacy of the input itself, being a raw training data sample or any information you can infer about it from this input.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Differential privacy&lt;/strong&gt;, on the other hand, looks at the ML system as a whole, and cares about protecting the privacy of the training set, used to train the model. In other words, we want to address the question: &amp;ldquo;Just by looking at my model as a white-box, or even as a black-box, how much can an adversary learn about individual data samples it has been trained on?&amp;rdquo; &lt;br&gt;
+… and Guess what? A lot of things!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;White box&lt;/em&gt; means here that the adversary can inspect internal parameters of the model. In a &lt;em&gt;black box&lt;/em&gt; scenario, the ML system is reduced to a simple query mechanism: you input a sample, it outputs a prediction.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This leads us to talk about the three most common misconceptions people tend to have about Machine Learning:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;That ML is some kind of &lt;strong&gt;magic&lt;/strong&gt; box in which we put all our data into, and it will solve all the world&amp;rsquo;s biggest problems.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;That ML models makes completely reasonable, &lt;strong&gt;fair&lt;/strong&gt;, and undiscutable decisions.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;That it is absolutely &lt;strong&gt;safe&lt;/strong&gt; to use ML in any situation, on any data.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;On this last point, I&amp;rsquo;m not so much talking about the reliability or &amp;ldquo;robustness&amp;rdquo; of a model (broken by things like evasion attacks or dataset poisoning), but more of the privacy guarantees of a trained model itself.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The first two of these misconceptions are being addressed by the Machine Learning community by respectively talking about the intricacies of fine-tuning to the general public, and pushing forward research in areas like &amp;ldquo;model interpretability&amp;rdquo; which try to circumvent the bias models may have when trained on biased datasets. Finally this &amp;ldquo;robustness&amp;rdquo; problem has been addressed by things like adversarial training, explained and theorisized as soon as in &lt;a href=&#34;https://arxiv.org/abs/1412.6572&#34;&gt;2014&lt;/a&gt;, but relates more to the &lt;strong&gt;Security&lt;/strong&gt; concerns of Machine Learning (&lt;a href=&#34;https://arxiv.org/pdf/1906.06449.pdf&#34;&gt;and might even harm its privacy aspects&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;However, the machine learning community seems to remain desperately blind to the last point, which considers the privacy risks of using machine learning on sensitive data.&lt;/p&gt;
+&lt;p&gt;Indeed, there has been a lot of evidences in the litterature (&lt;a href=&#34;https://www.cs.cmu.edu/~mfredrik/papers/fjr2015ccs.pdf&#34;&gt;M.Fredrikson et al.&lt;/a&gt;, &lt;a href=&#34;https://arxiv.org/abs/1610.05820&#34;&gt;R.Shokri et al.&lt;/a&gt;) that &lt;em&gt;a trained model, even released as a black-box query system, leaks a lot of information about the data it has been trained on&lt;/em&gt;. This is particularly true with big models such as deep neural networks, that tend more to memorize the whole dataset instead of learning general patterns in the data distribution.&lt;/p&gt;
+&lt;p&gt;An adversary can leverage two types of attacks against a machine learning model:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Membership inference attacks&lt;/strong&gt;, where the adversary learns whether or not a particular sample was part of the training dataset.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model inversion attack&lt;/strong&gt;, where the adversary reverse-engineers the model from its internal parameters leading to partial or full reconstruction of data samples.
+That&amp;rsquo;s how for instance &lt;a href=&#34;https://arxiv.org/abs/1802.08232&#34;&gt;some researchers&lt;/a&gt; have managed to extract and reconstruct credit cards and social security numbers from a model trained on scanned emails. Or to &lt;a href=&#34;https://www.cs.cmu.edu/~mfredrik/papers/fjr2015ccs.pdf&#34;&gt;recover some faces&lt;/a&gt; from the dataset used to train a facial recognition algorithm, just querying it and using information from the confidence score vectors.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;/img/Master-Thesis/ModelInversionFredrikson.png&#34; alt=&#34;ModelInversionFredrikson&#34; style=&#34;zoom:50%;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the absolute worst-case scenario possible, publishing a trained model looks a bit like publishing the training dataset itself; as some machine learning models behave a lot more like a lookup table, than a general intelligence that can recognize and identify patterns.&lt;/p&gt;
+&lt;p&gt;You might argue, in some less &amp;ldquo;extreme&amp;rdquo; cases than scanned emails (e.g: medical records of patients), even having access to the whole dataset is not such a big deal, right? After all, it is anonymized. All you can look at is a bunch of meaningless numbers!&lt;/p&gt;
+&lt;p&gt;If you really think that, don&amp;rsquo;t worry, you just need a &lt;strong&gt;big recap&lt;/strong&gt; class on Privacy research. As the years taught us, Anonymization simply &lt;a href=&#34;https://techcrunch.com/2019/07/24/researchers-spotlight-the-lie-of-anonymous-data/&#34;&gt;&lt;strong&gt;does not work&lt;/strong&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In Privacy research, we generally make no assumptions about the background knowledge of an adversary. Hence, by looking at the data itself, he might be able to infer a lot more things that you think.&lt;/p&gt;
+&lt;p&gt;There have been techniques developped and used in Privacy-Preserving Information Publishing to reduce the granularity of data, like &lt;a href=&#34;https://desfontain.es/privacy/k-anonymity.html&#34;&gt;k-anonimity&lt;/a&gt;, &lt;a href=&#34;https://desfontain.es/privacy/k-map.html&#34;&gt;k-map&lt;/a&gt;, &lt;a href=&#34;https://desfontain.es/privacy/l-diversity.html&#34;&gt;l-diversity&lt;/a&gt;, &lt;a href=&#34;https://desfontain.es/PDFs/PhD/TClosenessPrivacyBeyondKAnonymityAndLDiversity.pdf&#34;&gt;t-closeness&lt;/a&gt;, &lt;a href=&#34;https://desfontain.es/privacy/delta-presence.html&#34;&gt;$\delta$-presence&lt;/a&gt;, etc… and I want to talk to you about Differential Privacy, which is a powerful defition that allows us to reason in the general case, without any assumptions, and formally quantify the amount of privacy leakage with mathematical rigour.&lt;/p&gt;
+&lt;h2 id=&#34;differential-privacy&#34;&gt;Differential Privacy&lt;/h2&gt;
+&lt;p&gt;Informally, a data process (say a machine learning algorithm, or a simpler computation on the data) is said to be &lt;em&gt;differentially private&lt;/em&gt; if its output run over 2 neighboring datasets is approximatively the same.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We call &lt;em&gt;neighbours datasets&lt;/em&gt;, two datasets only differing by one sample&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This is what captured by this definition:
+$$
+\mathbb{P}[A(D_1)=O] \le e^\varepsilon\cdot\mathbb{P}[A(D_2)=O]
+$$&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Of course, we want epsilon to be as small as possible&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Imagine you have a database $D_1$ containing the salaries of $n$ people, from which you remove user &amp;ldquo;Joe&amp;rdquo; to obtain this second database $D_2$ of size $n-1$. We will define our algorithm &amp;ldquo;$A$&amp;rdquo; as a simple averaging operation. If our algorithm is differentially-private, it should respect this formula. In other terms, it should output approximately the same value on D1, or on D2, such that it would be undistinguishable for an adversary whether Joe was or not in the dataset, just by looking at this value.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/Master-Thesis/differential-privacy.png&#34; alt=&#34;differential-privacy&#34; style=&#34;zoom:30%;&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;As you may imagine, this requires the algorithm to introduce some randomness (i.e some &lt;strong&gt;noise&lt;/strong&gt;) in the computation process.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Looking at the formula, from a Bayesian perspective, this &amp;ldquo;$\epsilon$&amp;rdquo; represents the &amp;ldquo;amount of a posteriori knowledge&amp;rdquo; that an attacker gains, after looking at the output of $A$.&lt;/p&gt;
+&lt;p&gt;For instance, let&amp;rsquo;s say that an attacker was 50% certain that a target was in the dataset (i.e he has no clue), a $\epsilon$ of 1.1 would mean that by observing the output of $A$, he can &amp;ldquo;update&amp;rdquo; his suspicion to up to 75%.&lt;/p&gt;
+&lt;p&gt;As the noise is inversely proportional to $\epsilon$, the bigger the noise, and the smaller $\epsilon$ is, hence increasing the uncertainty of an adversary and leading to good privacy guarantees. However, too much noise would completely destroy the utility of the algorithm.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Understanding this definition from an intuitive perspective will help us fully comprehend the rest of the article. A differentially-private ML training algorithm is no different from our example above of a differentially-private &amp;ldquo;salary averaging system&amp;rdquo;. The only difference is what we call $A$ here is the method used to &lt;strong&gt;train&lt;/strong&gt; a ML model. In this case, the output is the trained model (or rather the set $O$ of possible models) itself. I think this is what brings a lot of confusion. To me, it never made sense to say &amp;ldquo;this ML algo &lt;strong&gt;is&lt;/strong&gt; DP&amp;rdquo;. But I would rather say &amp;ldquo;this ML algorithm has been trained in a differentially-private manner&amp;rdquo;.&lt;/p&gt;
+&lt;h2 id=&#34;differentially-private-machine-learning&#34;&gt;Differentially Private Machine Learning&lt;/h2&gt;
+&lt;p&gt;I want to motivate the rest of the article by a simple example taken from the Threat Intelligence world:
+Every day, companies receive thousands of malwares, and use anti-viruses and tools to detect and categorize these malwares. However, hackers are always more clever and now easily manage to evade those rule-based detection mechanisms. This led the security industry to design machine learning-based tools and rely on Threat Intelligence to classify new malwares.&lt;/p&gt;
+&lt;p&gt;Each company typically has to adapt such a system to their infrastructure, by training these ML systems on large corpuses of evidences that they gathered. This data could be highly sensitive as it could include hostnames, IP addresses, memory dumps, parts of the filesystem, …&lt;/p&gt;
+&lt;p&gt;However, companies (especially medium-size ones) generally cannot gather a huge amount of intelligence by themselves, and would benefit from other companies knowledge and insights. In his &lt;a href=&#34;https://www.ted.com/talks/caleb_barlow_where_is_cybercrime_really_coming_from&#34;&gt;TED Talk&lt;/a&gt;, Caleb Barlow, an ex-vice president of IBM security, compares cyberattacks to pandemics and show we should respond in the same way, and incentivize companies to openly share information about their breaches and infections.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;[…] Let&amp;rsquo;s think of the response we see to a healthcare pandemic: SARS, Ebola, bird flu, Zika. What is the top priority? It&amp;rsquo;s knowing who is infected and how the disease is spreading. Now, governments, private institutions, hospitals, physicians &amp;ndash; everyone responds openly and quickly. This is a collective and altruistic effort to stop the spread in its tracks and to inform anyone not infected how to protect or inoculate themselves.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Unfortunately, this is not at all what we see in response to a cyber attack. Organizations are far more likely to keep information on that attack to themselves. Why? Because they&amp;rsquo;re worried about competitive advantage, litigation or regulation. We need to effectively democratize threat intelligence data. We need to get all of these organizations to open up and share what is in their private arsenal of information. […]&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This idealistic view might become reality if we can get rid of the fear companies would have to openly share potentially sensitive information. To my opinion, this fear is even more intense as the one we might have from Facebook reading personal conversations of users, as this one is specifically business- and profit-oriented.&lt;/p&gt;
+&lt;p&gt;So let&amp;rsquo;s take this example of a malware classifier. We will consider a black-box machine learning algorithm (you might think of a deep neural network, or any kind of fancy architecture of your choice) which takes as input some suspicious files along with their context (extracted Indices Of Compromise (IOCs) and identified Tactics, Techniques and Procedures (TTPs)) and returns the category of the malware, one among these 10 classes:&lt;/p&gt;
+&lt;img src=&#34;/img/Master-Thesis/malware-classifier.png&#34; width=&#34;600px&#34;&gt;
+&lt;p&gt;That&amp;rsquo;s where we introduce the idea of &lt;strong&gt;Knowledge Transfer&lt;/strong&gt;. &lt;br&gt;
+Remember, companies do not want to share their private information, but just the necessary knowledge one can extract from it to help train a global model, without taking the risking that the latter remembers any information that could be used to identify any of their data samples in particular.&lt;/p&gt;
+&lt;p&gt;The idea goes as follows:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Each company trains a local model &lt;strong&gt;on their own private dataset&lt;/strong&gt;. We call these models &amp;ldquo;teacher models&amp;rdquo;, or simply &amp;ldquo;teachers&amp;rdquo;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Each of those models could have a different architecture, as long as they remain 10-classes classifiers as in the example above.
+*&lt;u&gt;**NB:*&lt;em&gt;&lt;/u&gt; We assume (and this is a primordial assumption) that all companies&amp;rsquo; datasets are disjoint. In practice, one can check quite efficiently that the intersection between any two pairs of datasets is empty using &lt;a href=&#34;https://en.wikipedia.org/wiki/Private_set_intersection&#34;&gt;Private Set Intersection&lt;/a&gt; protocols.&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once all of these teacher models have been sufficiently trained, we ask them to &lt;strong&gt;predict on public data&lt;/strong&gt; samples. Their prediction is called a &amp;ldquo;vote&amp;rdquo;, and it only consists in the &lt;strong&gt;class&lt;/strong&gt; that their model predicted.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;&lt;u&gt;NB:&lt;/u&gt;&lt;/strong&gt;&lt;/em&gt; We will call &amp;ldquo;prediction&amp;rdquo; the output of a teacher model, and &amp;ldquo;vote&amp;rdquo; will refer to what the client send to the aggregator.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;We collect all these votes and aggregate them centrally, to perform some kind of &amp;ldquo;&lt;strong&gt;noisy majority voting&lt;/strong&gt;&amp;quot;: The class with the most votes is selected, and this public data sample is labeled accordingly.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Why noisy? Remember, we want to make our decision process differentially private, hence we put some noise on top of the votes, in order to mask their true count, and hide as much as possible individual contributions (see blue/orange histograms below).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All these public data samples, alongside with their assigned labels, will constitute the training set of a final classifier, called a &amp;ldquo;student model&amp;rdquo;.
+This last model can be formally proven to be differentially private, and hence could be safely released publicly, even as a white-box model.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This technique is refered as &amp;ldquo;&lt;a href=&#34;https://arxiv.org/pdf/1610.05755.pdf&#34;&gt;Private Aggregation of Teacher Ensembles&lt;/a&gt;&amp;rdquo; and has been first introduced by Nicolas Papernot and a team from Google Brain. The method provides an elegant way to guarantee the differential privacy of the student model, trained to copy the input-to-output mapping these multiple teacher models. And because no two teachers are trained on the same examples; &lt;em&gt;whenever they agree on what the output should be, we know that they agree because of a general pattern, rather than because they memorized something about their own training examples&lt;/em&gt;. Hence, it is safe to copy that knowledge into the Student.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&#34;as-a-parenthesis-the-confident-gn-max-protocol&#34;&gt;As a parenthesis: The Confident GN-MAX protocol&lt;/h4&gt;
+&lt;p&gt;In an &lt;a href=&#34;https://arxiv.org/abs/1802.08908&#34;&gt;iteration to the PATE paper&lt;/a&gt;, Papernot devised a way to avoid the problem of misclassification in the case when teachers do not agree. We can decide &lt;strong&gt;not to asign any label&lt;/strong&gt; to a data sample if there is not a large enough consensus in teachers&amp;rsquo; predictions around a particular class.&lt;/p&gt;
+&lt;p&gt;Starting from the observation that the more confident teachers are, the more we can inject noise without risking to perturb the distribution too much (hence overthrowing the candidate with most votes), it allows us to tighten our privacy bounds, by injecting more noise when teachers agree.
+It is one of these rare cases where &lt;a href=&#34;https://infoscience.epfl.ch/record/255811/files/p665-guerraoui.pdf&#34;&gt;privacy and utility are compatible&lt;/a&gt;, and not conflicting each others.&lt;/p&gt;
+&lt;p&gt;The CGNMAX procedure goes as follow:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Let $v$ be the final aggregated votes vector (the blue histogram below). We take its maximum value, and noise it with gaussian noise with a high variance $\sigma_1$.&lt;/li&gt;
+&lt;li&gt;If the obtained value is not passed above a certain threshold $T$ that we can defined as &amp;ldquo;60% of the teachers&amp;rdquo; for instance, it means there was probably no clear consensus among the teachers. Hence, we do not assign any label to this public sample.&lt;/li&gt;
+&lt;li&gt;Otherwise, we reiterate the noising mechanism: We noised the aggregated vote vector $v$ with a gaussian noise with smaller variance $\sigma_2$ (giving a more precise estimate on the true votes distribution), and select as our label the argmax of the obtained vector.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We designed our two protocols below to perform this &amp;ldquo;consensus check&amp;rdquo; but for the sake of simplicity, we will not talk about it in this article.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;hr&gt;
+&lt;p&gt;We might now think we can tick our two boxes:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Differential privacy, … &lt;strong&gt;Check!&lt;/strong&gt; The final model is differentially private, and an adversary will hardly find evidences of any individual data samples just by inspecting it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Input privacy, … &lt;strong&gt;Wait a minute..!&lt;/strong&gt; Even though we do not send the raw data sample to a server, there is still a central entity collecting and noisily aggregating the votes from every teacher. It means that &lt;u&gt;this entity leans any individual vote&lt;/u&gt;. To express it the same way as above, each teacher does not send $x$ but some $h(x)$ to the server, $h$ representing here their ML model. An adversary might infer a lot of information from that vote alone!&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In our example of malware classifier, let&amp;rsquo;s assume an adversarial aggregator (server) has knowledge that the model of Company3 never predicts category &amp;ldquo;Trojan&amp;rdquo;, except if the company had trained it on some malwares containing &lt;a href=&#34;https://en.wikipedia.org/wiki/WannaCry_ransomware_attack&#34;&gt;WannaCry&lt;/a&gt; payloads. In that case, if the aggregator sees Company3 predicts &amp;ldquo;Trojan&amp;rdquo;, it can be pretty certain the company was previously affected by the nasty ransomware.&lt;/p&gt;
+&lt;p&gt;Not only the individual votes, we really want to protect the whole distribution of votes. With sufficient background knowledge, an adversary might be able to deduce something from the blue histogram below, alone. It can for instance rely on extreme cases like classes that have zero votes, or exactly one vote.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If we consider this voting process itself as our differential privacy mechanism, this problem looks a bit like the &lt;a href=&#34;https://desfontain.es/privacy/local-global-differential-privacy.html&#34;&gt;Local vs. Global Differential Privacy&lt;/a&gt; problem, which put into perspective two paradigms:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;In the &lt;strong&gt;Global DP&lt;/strong&gt; paradigm, a central aggregator collect data about individuals. Each of these individuals send their data to the aggregator without noise, and the latter is responsible to transform that data using a differentially private mechanise, i.e injecting the noise itself.&lt;/li&gt;
+&lt;li&gt;In the &lt;strong&gt;Local DP&lt;/strong&gt; paradigm, the aggregator no longer has access to the &amp;ldquo;true&amp;rdquo; data, as each individual is reponsible to noise their data before sending it for aggregation.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The local differential privacy model has the advantage of getting rid of all trust we must have in the aggregator. However, since each individial needs to inject enough noise in their data to hide it properly from the aggregator, the aggregate result then become less accurate than in the global model where the differentially private mechanism is only applied once, and requires a lot less noise to still get a decent $\epsilon$.&lt;/p&gt;
+&lt;p&gt;So to take again our example of malware classification, in our previous scheme, each individual teacher would send its vote to the aggregator. Once collected, the repartition of votes would look something like this:&lt;/p&gt;
+&lt;img src=&#34;/img/Master-Thesis/histogram-votes.png&#34; width=&#34;700px&#34;&gt;
+&lt;p&gt;It seems there is a big consensus around class &amp;ldquo;Adware&amp;rdquo; even though the class &amp;ldquo;Spyware&amp;rdquo; has a non negligeable weight. Teachers also have marginally voted for class &amp;ldquo;Phishing&amp;rdquo; and &amp;ldquo;Miner&amp;rdquo;. As always, there are also some outliers and &amp;ldquo;true&amp;rdquo; noise in these votes, misclassification could happen.&lt;/p&gt;
+&lt;p&gt;On top of these votes, the aggregator adds some gaussian noise, with appropriate variance $\sigma^2$ to hide the true vote counts per class. The standard deviation  $\sigma$ has to be carefully selected and depends on our &amp;ldquo;privacy budget&amp;rdquo; $\epsilon$.
+The new noisy histogram would look something like this:&lt;/p&gt;
+&lt;img src=&#34;/img/Master-Thesis/histogram-noisy-votes.png&#34; width=&#34;700px&#34;&gt;
+&lt;p&gt;We can see that the noise perturbed a bit the distribution, but kept the order of the two most prominent classes intact (although decreasing a bit the consensus formed around &lt;em&gt;&amp;ldquo;Adware&amp;rdquo;&lt;/em&gt; and increasing the importance of &lt;em&gt;&amp;ldquo;Spyware&amp;rdquo;&lt;/em&gt;). Therefore, the assigned label will remain &lt;em&gt;&amp;ldquo;Adware&amp;rdquo;&lt;/em&gt; in this case.&lt;/p&gt;
+&lt;p&gt;This is not good enough, as the aggregator learns any individual vote. Indeed, &lt;strong&gt;he is responsible&lt;/strong&gt; for properly noising the votes, and receive them un-noised. A simple workaround would be to allow indeed each client to noise their own vote before sending it to the server / aggregator. Assuming we do want to have a total noise of variance $\sigma^2$, fortunately gaussian random variables add up nicely, and if we have $n$ teachers, we can have each one noising its vote with a gaussian noise of variance $\sigma^2/n$.&lt;/p&gt;
+&lt;p&gt;However, this typically gives us a noise value so small that it cannot hide the true vote value from the aggregator (see on the graph below, the noised vote still shows a clear peak on the true class value). The final model will indeed be differentially private, it doesn&amp;rsquo;t change the algorithm, but it doesn&amp;rsquo;t REALLY respect the &amp;ldquo;input privacy&amp;rdquo; problem we talked about earlier.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;Un-noised vote&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Noised vote  •  $\mathcal{N}(\mu=0, \sigma = 0.3)$&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/one-vote.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/one-noisy-vote.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note that the argmax of an individual noised vote vector might not necessarily be representative of the true predicted class of this teacher, but as we sum these votes up, if the teachers agree, a clear majority should emerge anyway.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Also note that one &amp;ldquo;client&amp;rdquo; can train multiple teachers. It just had to divide its dataset into $m$ parts, train $m$ teacher models on those disjoint datasets, and aggregate their predictions in one vote vector, before sending it to the server (e.g: [0,0,12,0,0,2,0,1,0,0] for $m = 15$). In the local model, it would noise this vector with a variance equal to $m$ times the variance used to noise a single vote.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;So, true input privacy is only guaranteed if we trust a central aggregator. In our example, it could be a server from the Electronic Frontier Foundation, for instance. But in general, having a trusted unpartial server available to perform the aggregation is a very strong assumption.&lt;/p&gt;
+&lt;p&gt;So, &lt;strong&gt;how can we get rid of that trust&lt;/strong&gt;? This is exactly the sort of question to which Secure Computation has the answer.&lt;/p&gt;
+&lt;h2 id=&#34;secure-computation&#34;&gt;Secure Computation&lt;/h2&gt;
+&lt;p&gt;Secure computation is a way to compute a function $y = f(x_1,x_2, …, x_n)$ on $n$ private inputs typically held by $n$ individuals (parties) which does not necessarily trust each other.
+The output of the computation could be delivered to one or several input parties, or even a distinct individual. The latter should only lean the value $y$, and never learn about these inputs $x_1, x_2, …, x_n$.&lt;/p&gt;
+&lt;p&gt;To solve our problem of aggregating teachers votes in a secure manner, we can use two different approaches:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;General Secure Multi-Party Computation&lt;/strong&gt; (MPC) protocols, which allow us to compute any type of function. That way, we will be able to compute the argmax of our noisy sum of votes&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Specific protocols, &lt;strong&gt;only tailored for secure aggregation&lt;/strong&gt;, i.e summing all these private inputs $x_1, x_2, …, x_n$.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So we experimentally design two systems using these two different approaches, suited for two different scenarios:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;In the &lt;strong&gt;first scenario&lt;/strong&gt;, the parties are assumed to be equal in terms of &lt;em&gt;computation power&lt;/em&gt;, &lt;em&gt;communication latency&lt;/em&gt;, and &lt;em&gt;should be available&lt;/em&gt; at all time. There are typically only a &lt;em&gt;few parties&lt;/em&gt;, and they are all interconnected in a &lt;em&gt;Mesh architecture&lt;/em&gt;.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In this scenario, we will use a general MPC protocol&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;In the &lt;strong&gt;second scenario&lt;/strong&gt;, we assume a &lt;em&gt;lot of non-reliable and weak&lt;/em&gt; devices (in terms of computation power), interacting with a central server in a &lt;em&gt;Star architecture&lt;/em&gt;. A large portion of these devices can typically &lt;em&gt;drop out&lt;/em&gt; during the computation, without affecting the protocol (their input is simply not taken into consideration).&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;In this scenario, we will use a secure aggregation protocol&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;First scenario&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;Second Scenario&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/hospitals-scenario.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/fedlearning-scenario.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Choosing one or the other depends on the use-case. Of course, general MPC is much more expressive, but is typically quite slow and greedy in terms of communication, while the other approach is more suited for a real-world environement and typically offer better performance, but is less adaptable to a system design change.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;first-scenario---mpyc&#34;&gt;First scenario - MPYC&lt;/h3&gt;
+&lt;p&gt;For our first scenario, we relied on a General Multiparty Computation scheme based on homorphic secret sharing. We implemented it in Python with the &lt;a href=&#34;https://github.com/lschoe/mpyc&#34;&gt;mpyc library&lt;/a&gt;, which is based on Shamir secret sharing and Pseudorandom secret sharing.&lt;/p&gt;
+&lt;p&gt;Secret sharing is a way to split a secret into $n$ different shares and typically distribute these shares to different parties. The secret could be reconstructed out of all (or a portion) of these shares.&lt;/p&gt;
+&lt;p&gt;The most interesting case is of course when only a portion (a subset) of these shares allow to reconstruct the full secret. This is called &lt;strong&gt;t-out-of-n threshold secret sharing&lt;/strong&gt; (or $(t,n)$ secret sharing). Such a scheme is made of two algorithms:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$[ \ [![ s ]!]_1, [![ s ]!]_2, …, [![ s ]!]_n ] \leftarrow SS.split(s, t, n)$, which splits our secret $s$ into $n$ shares, from which at least $t$ are needed to reconstruct $s$.&lt;/li&gt;
+&lt;li&gt;$s&amp;rsquo; \leftarrow SS.recons( [ \ [![ s ]!]_i, [![ s ]!]_j, … ] )$, which reconstructs the original secret $s$ if $| \ [ \ [![ s ]!]_i, [![ s ]!]_j, … ] \ | \geq t$,  or outputs &lt;em&gt;any value&lt;/em&gt; if not enough shares are provided, or incorrect shares for our secret $s$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;These two algorithms must respect two properties (taken from the book &amp;ldquo;A Practical Introduction to Secure Multi-Party Computation&amp;rdquo;):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Correctness&lt;/strong&gt;&lt;/em&gt;. Let $[ \ [![ s ]!]&lt;em&gt;1, [![ s ]!]&lt;em&gt;2, …, [![ s ]!]&lt;em&gt;n ] \leftarrow  SS.split(s, t, n)$. Then:
+$$
+\mathbb{P}[∀k ≥ t, SS.recons( [ \ [![ s ]!]&lt;/em&gt;{i_1}, [![ s ]!]&lt;/em&gt;{i_2}, …, [![ s ]!]&lt;/em&gt;{i_k} ] ) = S] = 1
+$$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Perfect Privacy&lt;/strong&gt;&lt;/em&gt;. Any set of shares of size less than &lt;em&gt;t&lt;/em&gt; does not reveal anything about the secret in the information theoretic sense. More formally, for any two secrets $a, b \in D$ and any possible vector of shares $v = [v1, v2, &amp;hellip;, vk]$, such that $k &amp;lt; t$ (and $|_k$ denotes appropriate projection on a subspace of &lt;em&gt;k&lt;/em&gt; elements):
+$$
+\mathbb{P}[v = SS.split(a)|_{k}] = Pr[v = SS.split(b)|_{k} ]
+$$&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;It is not hard to find examples of $(n,n)$ secret sharing (one that creates $n$ shares, and which requires all $n$ shares to reconstruct the secret). Multiplicative secret sharing for instance, needs all shares to be multiplied together to reconstruct the secret. We can also think about how easy it is to simply onion-encrypt a secret $S$ with $n$ keys.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;u&gt;NB:&lt;/u&gt;&lt;/strong&gt; In general, we can create an $(n,n)$ secret sharing scheme by taking any group $G$ with group operation ∗, mapping the shared secret into a group member $S$, selecting $n−1$ random (uniformly distributed) group elements, and publishing the shares $s_1,s_2,…,s_{n-1}$ and the last one, being computed as $s_n = S∗(s_1∗s_2∗…∗s_{n−1})^{−1}$.&lt;/p&gt;
+&lt;p&gt;In multiplicative secret sharing, we work in the group $\mathbb{Z}_p^*$ (for a prime $p$), and the operation * is the simple mutliplication.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;This is information-theorically secure, because anynone in the possession of $n−1$ shares, will still have no information on the shared secret $S$. For each possible value of $S$, there is a possible value of the missing share, and this defines the cardinality of the search space.&lt;/p&gt;
+&lt;p&gt;The analogy with onion-encryption (although not theorically the same as secret sharing) is exactly what we see in spy movies: The access to the nuclear button is locked with 3 keys, owned by 3 different Russian generals, and it is required to enter the 3 keys at the same time to unlock the mechanism.&lt;/p&gt;
+&lt;p&gt;Now, what if we only want to require any 2 out of these 3 keys? This would be analogous to (2,3) secret sharing, a 2-out-of-3 scheme. I&amp;rsquo;m not an expert in padlock mechanism, but I&amp;rsquo;m sure it exists&amp;hellip;&lt;/p&gt;
+&lt;p&gt;In theory we could build a t-out-of-n from a n,n, but requires a exploding combinatorially many locks and keys.&lt;/p&gt;
+&lt;p&gt;Building such schemes from a more abstract standpoint requires the problem to be reformulated as an algebraic system of $n$ equations, with $t$ unknowns.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Shamir&amp;rsquo;s scheme&lt;/strong&gt;, relies on polynomial interpolation, where each share is a value $y_i = f(x_i)$ equal to a polynomial of degree $t-1$ evaluated in some points $x_1$, $x_2$, …, $x_n$.
+Indeed, $d$ distinct points $(x_i, y_i)$ are sufficient to completely determine a polynomial of degree $d-1$ (2 points for a line, 3 points for a quadratic polynomial, etc…), but any subset of&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Blakey&amp;rsquo;s scheme&lt;/strong&gt;, relies on geometric considerations to reconstruct the location of a point at the intersection of several hyperplanes, where each share is the equation of an hyperplane. Indeed, in 3 dimensions for instance, 2 surfaces (hyperplanes of dimension 3) would intersect in a line (i.e a hyperplane of dimension 2), and you would need a 3rd hyperplane to reduce further the dimensionality of the intersection to a single point.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Other schemes, like &lt;strong&gt;Mignotte&amp;rsquo;s&lt;/strong&gt; or &lt;strong&gt;Asmuth-Bloom&amp;rsquo;s&lt;/strong&gt; schemes rely on the &lt;a href=&#34;https://en.wikipedia.org/wiki/Secret_sharing_using_the_Chinese_remainder_theorem&#34;&gt;Chinese Remainder Theorem&lt;/a&gt;, where each share is a reduction of the secret modulo some prime numbers.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;Our (NAIVE) protocol for $m$ parties + 1 server (which is also a computation party, but only an output party, not an input party) would go as follows:&lt;/p&gt;
+&lt;p&gt;We want to compute $v = \sum_{i=1}^{m} v_i$&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Each party $i$ generates shares of its private noisy vote vector $v_i$ (actually just its vote vector, noised with appropriate random Gaussian noise) and distribute one to every other party: $[![ v_i ]!]_1, [![ v_i ]!]_2, …, [![ v_i ]!]_m$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Once all the shares are exchanged, without further communication each party $i$ adds its shares of $v_1, v_2, …, v_m$. As the addition operation is homomorphic, they now hold a share of the sum $v$ : $[![ v ]!] = \sum_{j=1}^{m}  [![ v_j ]!]_i$.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All the parties now send their share of this sum $v$ to the aggregator, which reconstructs it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The aggregator selects the argmax of $v$ as the assigned label.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Note that in the MPC paradigm, every node is a &amp;ldquo;computation party&amp;rdquo;, so what we called so far the &lt;em&gt;server&lt;/em&gt; or &lt;em&gt;aggregator&lt;/em&gt; is an &amp;ldquo;output party&amp;rdquo; (i.e receiving an output value), while the other nodes, the &lt;em&gt;clients&lt;/em&gt; are &amp;ldquo;input parties&amp;rdquo; (i.e contributing an input value).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Following our assumptions of a honest-but-curious setting, clients will respect the protocol (e.g properly noise their input vector), however they will try to learn as much as possible with what is available to them. In particular, clients might want to collude with the server, and share their inputs/outputs.&lt;/p&gt;
+&lt;p&gt;In this case, they manage to &amp;ldquo;un-noise&amp;rdquo; the distribution, by substracting the noise part they generated to the final noisy aggregated sum. Their goal is to learn a closer estimate to the blue histogram above, and break differential privacy.&lt;/p&gt;
+&lt;p&gt;Hence, we have to design a way for the clients to obliviously send their noise to the server, i.e send a noise value without knowing it. Of course, the server, which will receive it, should neither be aware of this noise value, and aggregate all these noise values together without asking questions.&lt;/p&gt;
+&lt;p&gt;We can build this system incrementally:&lt;/p&gt;
+&lt;p&gt;Our first idea is to construct an &lt;a href=&#34;https://en.wikipedia.org/wiki/Oblivious_transfer&#34;&gt;Oblivious Transfer&lt;/a&gt; mechanism, between each client and the server. This means that each client will generate $d$ different noise values (gaussian noise, with same variance), and the server will select 1 out of these $d$, without the client knowing which one.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Without loss of generality, we will choose here $d=2$&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Formally, oblivious transfer is defined as follow:
+A sender $S$ holds 2 private inputs $x_0$ and $x_1$, a receiver $R$ holds a selection bit $b = {0,1}$. The receiver must obtain $x_b$ must not learn any information about $x_{b-1}$. The sender must not learn the value of $b$ (i.e it must not know which of the two inputs was selected).&lt;/p&gt;
+&lt;p&gt;In our case, we do not require the server to obtain &lt;strong&gt;no&lt;/strong&gt; information about the other (non-selected) noise value, but we absolutely do not want the client to learn which of its inputs was selected by the server. So it is obivious in only one direction. A simple way to implement this protocol is just to send both values to the server, and let it select one.&lt;/p&gt;
+&lt;p&gt;This is an essential first step, but there is still a catch, since we assumed clients could collude with the server, the latter could communicate which private noise value it selected.&lt;/p&gt;
+&lt;p&gt;We hence need to design a system in which the server does not even &lt;strong&gt;know&lt;/strong&gt; which value it selected. In other terms, the selection bit $b$ must be oblivious to him.&lt;/p&gt;
+&lt;p&gt;There is a simple way all parties could come up with a shared list of $m$ random bits (i.e, 1 for each party):&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We ask each party to generate an array of random bits $r_i$ = [0, 0, 1, 0, 1, …]&lt;/li&gt;
+&lt;li&gt;They secret share it with every other party&lt;/li&gt;
+&lt;li&gt;They XOR their shares of each array $r_1, r_2, …, r_m$ (element-wise)&lt;/li&gt;
+&lt;li&gt;They now hold shares of a final array $r$ which contains random bits, derived with the help of everyone&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This array $r$ will contain the selection bits for every party. I.e the server will select the private value $x_{r[j]}$ of party $j+1$ (**NB:** We assumed list indexing started at zero, but our first client has index &amp;ldquo;1&amp;rdquo;).&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This way, there is no way for the aggregator to recover the un-noised value of the aggregate sum. It would require &lt;strong&gt;every&lt;/strong&gt; client to send their &lt;strong&gt;two&lt;/strong&gt; generated noise values, and then the server would need to try the $2^m$ noise combinations ($d^m$ in the more general case) to remove from the noisy aggregate until eventually finding a combination of values that would give a integer number (i.e the true aggregate value).&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Full Protocol: (not CGNMAX)&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Each party $i$ draws two random gaussian noise values from the same distribution with appropriate variance, and applies it to its vote vector. It obtain two noisy vectors $v_i^0$ and $v_i^1$.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each party secret shares both of these vectors with every other party.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each party derives the shares of this list of selection bits $r$ (&lt;em&gt;&lt;strong&gt;&lt;u&gt;NB&lt;/u&gt;&lt;/strong&gt;&lt;/em&gt;: They do not recombine their shares and recover the raw list of bits, we want to do the selection under MPC).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Each party add the shares of vote vectors they have according to the selection list $r$, i.e, still under MPC they will do $[v] = \sum_{i=1}^m v_i^{r[i-1]}$&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All the parties now send their share of this sum $v$ to the aggregator, which reconstructs it.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The aggregator selects the argmax of $v$ as the assigned label.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; In the CGNMAX one, parties don&amp;rsquo;t directly noise their votes vector. Each of them generate a noise part, which are aggregated together into a total noise, used to noise the maximum value of the array. If this value passes a certain threshold, we repeat the process of directly noising the votes vectors themselves, and selecting the argmax of the aggregate.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;We used mpyc because it efficiently deals with communication (we do not have to reimplement that) and it is in Python, which is easily readable, and understandable by the Machine Learning community (as their language of predilection).
+They state that this is an academic library, perfect for prototyping.&lt;/p&gt;
+&lt;p&gt;Each party runs the same code, and they have a &amp;ldquo;Party ID&amp;rdquo; &lt;code&gt;pid&lt;/code&gt;, so if you want to do a disjonction among parties (as in our case, the distinction between the server (aggregator) and the client), you can branch depending on this pid.&lt;/p&gt;
+&lt;p&gt;Let&amp;rsquo;s look at the code:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/AlexConnat/MPC-Aggreg/blob/master/main.py&#34;&gt;https://github.com/AlexConnat/MPC-Aggreg/blob/master/main.py&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Explain portion of the code like mpc.input(), mpc.output(), etc… (important functions) -&amp;gt; Already in comments&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Put graph of performances with different number of clients (+Interpolation) and different latency LAN/WAN (explain how we delayed the LAN) + Small Conclusion.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;Few Clients&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;More Clients&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-mpc-1.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-mpc-2.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3 id=&#34;second-scenario---secagg&#34;&gt;Second scenario - SecAgg&lt;/h3&gt;
+&lt;p&gt;For the second scenario, we make use of a protocol by Google, defined in the paper &amp;ldquo;&lt;a href=&#34;https://ai.google/research/pubs/pub47246/&#34;&gt;Practical Secure Aggregation for Privacy-Preserving Machine Learning&lt;/a&gt;&amp;quot;, that we slightly adapt for our needs.&lt;/p&gt;
+&lt;p&gt;This protocol uses pairs of self-cancelling blinding vectors to hide the private input of each client, while still getting the correct result when aggregated all together.&lt;/p&gt;
+&lt;p&gt;The big advantage of this protocol is it can support arbitrary large input vectors, without increasing much performance, and can tolerate up to half of the clients dropping out. However, it is only designed for secure aggregation of vectors, and you cannot for instance perform a secure maximum, or secure argmax on the resulting vector, as with mpyc. The server will eventually learn the full aggregated vector.&lt;/p&gt;
+&lt;p&gt;To give the intuition behind the protocol, I will take the example of &lt;strong&gt;three clients&lt;/strong&gt;, that could be easily generalized to an arbitrary number of clients.&lt;/p&gt;
+&lt;p&gt;So we have three clients, each one having its own private input vector $x_i$. For our application, you can imagine these $x_1, x_2, x_3$ as their votes vector. We want to have the server obtain $z = \sum_{}^{} x_i$ without learning any individual $x_i$.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;All three clients will &lt;strong&gt;exchange a &amp;ldquo;mask&amp;rdquo;&lt;/strong&gt; with each other (even though they communicate through encrypted channels, in practice, all messages go though a central server). This mask is simply a vector of same cardinality as the inputs, containing uniformily distributed random values.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Client 1 and client 2 will exchange a mask $p_{12}$.&lt;/li&gt;
+&lt;li&gt;Client 1 and client 3 will exchange a mask $p_{13}$.&lt;/li&gt;
+&lt;li&gt;Client 2 and client 3 will exchange a mask $p_{23}$.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Clients will mask their input $x_i$ by &lt;strong&gt;adding the masks they share with any clients whose ID is higher&lt;/strong&gt; than theirs (assume a total order on clients IDs) and &lt;strong&gt;substract the ones they share with clients with lower IDs&lt;/strong&gt;. Once masked, they send their output $y_i$ to the server.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$y_1 = x_1 + p_{12} + p_{13}$&lt;/li&gt;
+&lt;li&gt;$y_2 = x_2 + p_{23} - p_{12}$&lt;/li&gt;
+&lt;li&gt;$y_3 = x_3 - p_{13} - p_{23}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;The server performs a simple summation of the inputs $y_i$ it received from clients, as indeed: &lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;$$
+\sum_{u=1}^3 y_u = x_1 + \cancel{p_{12}} - \cancel{p_{12}} + x_2 + &amp;hellip; = \sum_{u=1}^3 x_u = z
+$$&lt;/p&gt;
+&lt;p&gt;However, this protocol, as simple as it could be, has two drawbacks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Dropout resistance&lt;/strong&gt; (+ explain Double Masking, to make it secure against late messages (or lying in the malicious case))&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Communication overhead&lt;/strong&gt; (-&amp;gt; Explain PRG, and the seed agreed with DHKE)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Indeed, we can observe that the protocol described above is not tolerating any clients dropping out, i.e clients not responding anymore. In our example, what would happen if the second client would crash just after having exchanged masks with every other client? The server would hence receive:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;$y_1 = x_1 + p_{12} + p_{13}$&lt;/li&gt;
+&lt;li&gt;$y_2 =$ ???&lt;/li&gt;
+&lt;li&gt;$y_3 = x_3 - p_{13} - p_{23}$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The server still want to compute the sum of private inputs of the &lt;strong&gt;remaining&lt;/strong&gt; clients $z&amp;rsquo; = x_1 + x_3$, but it cannot just add $y_1 + y_3$ as only the mask $p_{13}$ would cancel out, and the masks shared with the dropped out client ($p_{12}$ and $p_{23}$) would remain in the sum, hence yielding a wrong result.&lt;/p&gt;
+&lt;p&gt;To solve that problem, during masks derivation and exchange phase, each client should share with every other a 2-out-of-3 secret share of its masks (or a $t$-out-of-$n$, with $t= floor(n/2)+1$ in the general case).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Client 1 sends to:
+&lt;ul&gt;
+&lt;li&gt;Client 2: $[![ p_{12} ]!]_2$ and $ [![ p_{13} ]!]_2$&lt;/li&gt;
+&lt;li&gt;Client 3: $[![ p_{12} ]!]_3$ and $ [![ p_{13} ]!]_3$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Client 2 sends to :
+&lt;ul&gt;
+&lt;li&gt;Client 1: $[![ p_{12} ]!]_1$ and $ [![ p_{23} ]!]_1$&lt;/li&gt;
+&lt;li&gt;Client 3: $[![ p_{12} ]!]_3$ and $ [![ p_{23} ]!]_3$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Client 3 sends to:
+&lt;ul&gt;
+&lt;li&gt;Client 1: $[![ p_{13} ]!]_1$ and $ [![ p_{23} ]!]_1$&lt;/li&gt;
+&lt;li&gt;Client 2: $[![ p_{13} ]!]_2$ and $ [![ p_{23} ]!]_2$&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Holding these 2-out-of-3 shares will allow the remaining clients to reconstruct the masks of the ones that dropped out…. ALREADY HAD THEM….. (3 is a bad example). It is to avoid &lt;strong&gt;recovery of recovery&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;With 4, is it 3-out-of-4 or 2-out-of-4 ???&lt;/p&gt;
+&lt;p&gt;y1 = x1 + p12 + p13 + p14&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;y2 = x2 + p23 + p34 - p12&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;y3 = x3 + p34 - p13 - p23&lt;/p&gt;
+&lt;p&gt;y4 = x4 - p14 - p24 - p34&lt;/p&gt;
+&lt;p&gt;$x1 + x3 + x4 + \cancel{p13-p13} + \cancel{p14-p14} + \cancel{p34-p34} + p12 + p23 - p24$&lt;/p&gt;
+&lt;p&gt;If we ask all remaining clients to send shares of masks for p12, p23, p24, as everyone has them, even if a new client drops out during this phase (say y3), we still have 2 shares of p12, 2 shares of p23, two shares of p24 which is enough to reconstruct those masks.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Write about communication overhead&lt;/p&gt;
+&lt;p&gt;We modified a bit the protocol so that instead of sending their raw input $x_i$, each client would send a &lt;strong&gt;noisy&lt;/strong&gt; version of their input (i.e, of their vote vector) $\tilde{x}_i$.&lt;/p&gt;
+&lt;p&gt;What is the amount of noise each client should put?&lt;/p&gt;
+&lt;p&gt;If we want a total gaussian noise with variance $\sigma^2$, and there are $n$ teachers each teacher prediction should be noised with a variance $\frac{\sigma^2}{n}$. And knowing that a teacher can send the aggregated predictions of $t$ teachers, this vote vector should be noised with variance $\frac{t}{n}\sigma^2$ (i.e a standard deviation of $\sqrt{\frac{t}{n}}\sigma$).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Explain mechanism to add more noise than needed (in the worst case scenario where half of the nodes drop out), and then remove the noise value of the nodes that &lt;strong&gt;didn&amp;rsquo;t drop out&lt;/strong&gt;!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Write about &amp;ldquo;Multiple teachers per nodes&amp;rdquo; (not implemented, though) -&amp;gt; Hierarchy of teachers, to get as close as possible to the true variance value.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Comment the performance graphs (different number of nodes + proportion of nodes dropping out + latency)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Write a Small Conclusion for the chapter&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;Few Clients&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;More Clients&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-secagg-1.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-secagg-2.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id=&#34;evaluation&#34;&gt;Evaluation&lt;/h2&gt;
+&lt;p&gt;Our evaluation is essentially the time it takes both systems to perform one iteration of the protocol and hence produce one label (or None) for a data sample.&lt;/p&gt;
+&lt;p&gt;In this part, we do not measure the performance of the actual Machine Learning task, in terms of the accuracy of the student model, as this one depends solely on the amount of noise we introduced in the Knowledge Transfer mechanism. We refer the reader to Table ??? on a summary of these results for the three most common image recognition datasets.&lt;/p&gt;
+&lt;p&gt;We measured this time on a EC2 AWS Machine m5.4xlarge with 16vCPUs and 64Go of RAM, with a 100GBps ethernet connexion. In our setting, all clients were hosted on the same machine, as different processes. Hence we simulated real latencies introduced by distance between nodes in a LAN or WAN environement using tc.&lt;/p&gt;
+&lt;h2 id=&#34;general-conclusion--future-work&#34;&gt;General Conclusion + Future work&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; Compare both implementations, say how this could be further improved, etc&amp;hellip;&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th align=&#34;center&#34;&gt;Few Clients&lt;/th&gt;
+&lt;th align=&#34;center&#34;&gt;More Clients&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-both-1.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;center&#34;&gt;&lt;img src=&#34;/img/Master-Thesis/runtime-both-2.png&#34; alt=&#34;&#34;&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;TODO:&lt;/strong&gt; (re-write the &amp;ldquo;Future Work&amp;rdquo; section from my Thesis)&lt;/p&gt;
+</content>
+            
+            
+            
+            
+            
+                
+                    
+                        
+                            
+                            
+                            
+                                <category scheme="https://alexconnat.github.io/categories/privacy/" term="Privacy" label="Privacy" />
+                            
+                        
                     
                 
                     

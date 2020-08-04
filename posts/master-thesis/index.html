@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+    <head prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article#">
+    <meta charset="UTF-8" />
+
+    <meta name="generator" content="Hugo 0.71.0" /><meta name="theme-color" content="#16171d" />
+        <script>
+            const userPrefers = localStorage.getItem('theme');
+            const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            const lightModeMediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+            if (userPrefers === 'dark') {
+                changeModeMeta('dark');
+            } else if (userPrefers === 'light') {
+                changeModeMeta('light');
+            } else if (darkModeMediaQuery.matches) {
+                changeModeMeta('dark');
+            } else if (lightModeMediaQuery.matches) {
+                changeModeMeta('light');
+            }
+            function changeModeMeta(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                if (theme === 'dark') {
+                    changeThemeColor('#16171d');
+                } else {
+                    changeThemeColor('#fff');
+                }
+            }
+            function changeThemeColor(themeColor) {
+                document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+            }
+        </script>
+
+    
+
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
+    
+    <meta http-equiv="Cache-Control" content="no-transform" />
+    
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <title>A Differentially-Private Decentralized Machine Learning Framework | Alex Connat | Blog</title>
+
+    <link rel="stylesheet" href="/css/meme.min.b3c0d0431a828b85bb125072c9fd1f8685a5b8da1ffc4ec9a4ab03eb9b03cd61.css" integrity="sha256-s8DQQxqCi4W7ElByyf0fhoWluNof/E7JpKsD65sDzWE=" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM&#43;Plex&#43;Serif:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;family=Comfortaa:wght@700&amp;display=swap&amp;family=Montserrat&amp;display=swap" media="print" onload="this.media='all'" />
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM&#43;Plex&#43;Serif:ital,wght@0,400;0,500;0,700;1,400;1,700&amp;family=Source&#43;Code&#43;Pro:ital,wght@0,400;0,700;1,400;1,700&amp;family=Comfortaa:wght@700&amp;display=swap&amp;family=Montserrat&amp;display=swap" /></noscript>
+
+    <meta name="author" content="Alex Connat" /><meta name="description" content="​ Master&amp;rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat
+Introduction - Outline In this article, I will try to give the reader a high overview of my Master Thesis: &amp;ldquo;A Differentially-Private Decentralized Machine Learning Framework&amp;rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich." />
+
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color="#2a6df4" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Alex Connat | Blog" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Alex Connat | Blog" />
+    <meta name="msapplication-starturl" content="../../" />
+    <meta name="msapplication-TileColor" content="#fff" />
+    <meta name="msapplication-TileImage" content="../../icons/mstile-150x150.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    
+    
+
+    
+    <link rel="canonical" href="https://alexconnat.github.io/posts/master-thesis/" />
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "datePublished": "2019-09-10T18:00:00+02:00",
+        "dateModified": "2020-08-04T17:38:51+02:00",
+        "url": "https://alexconnat.github.io/posts/master-thesis/",
+        "headline": "A Differentially-Private Decentralized Machine Learning Framework",
+        "description": "​ Master\u0026rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat\nIntroduction - Outline In this article, I will try to give the reader a high overview of my Master Thesis: \u0026ldquo;A Differentially-Private Decentralized Machine Learning Framework\u0026rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich.",
+        "inLanguage" : "en",
+        "articleSection": "posts",
+        "wordCount":  7487 ,
+        "image": ["https://alexconnat.github.io/img/Master-Thesis/marc-privacy.jpg","https://alexconnat.github.io/img/Master-Thesis/ModelInversionFredrikson.png","https://alexconnat.github.io/img/Master-Thesis/differential-privacy.png","https://alexconnat.github.io/img/Master-Thesis/malware-classifier.png","https://alexconnat.github.io/img/Master-Thesis/histogram-votes.png","https://alexconnat.github.io/img/Master-Thesis/histogram-noisy-votes.png","https://alexconnat.github.io/img/Master-Thesis/one-vote.png","https://alexconnat.github.io/img/Master-Thesis/one-noisy-vote.png","https://alexconnat.github.io/img/Master-Thesis/hospitals-scenario.png","https://alexconnat.github.io/img/Master-Thesis/fedlearning-scenario.png","https://alexconnat.github.io/img/Master-Thesis/runtime-mpc-1.png","https://alexconnat.github.io/img/Master-Thesis/runtime-mpc-2.png","https://alexconnat.github.io/img/Master-Thesis/runtime-secagg-1.png","https://alexconnat.github.io/img/Master-Thesis/runtime-secagg-2.png","https://alexconnat.github.io/img/Master-Thesis/runtime-both-1.png","https://alexconnat.github.io/img/Master-Thesis/runtime-both-2.png"],
+        "author": {
+            "@type": "Person",
+            "image": "https://alexconnat.github.io/icons/apple-touch-icon.png",
+            "url": "https://alexconnat.github.io/",
+            "name": "Alex Connat"
+        },
+        "license": "[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en)",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Alex Connat | Blog",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://alexconnat.github.io/icons/apple-touch-icon.png"
+            },
+            "url": "https://alexconnat.github.io/"
+        },
+        "mainEntityOfPage": {
+            "@type": "WebSite",
+            "@id": "https://alexconnat.github.io/"
+        }
+    }
+</script>
+
+    
+
+<meta name="twitter:card" content="summary_large_image" />
+
+
+
+    
+
+
+
+<meta property="og:title" content="A Differentially-Private Decentralized Machine Learning Framework" />
+<meta property="og:description" content="​ Master&amp;rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat
+Introduction - Outline In this article, I will try to give the reader a high overview of my Master Thesis: &amp;ldquo;A Differentially-Private Decentralized Machine Learning Framework&amp;rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich." />
+<meta property="og:url" content="https://alexconnat.github.io/posts/master-thesis/" />
+<meta property="og:site_name" content="Alex Connat | Blog" />
+<meta property="og:locale" content="en" /><meta property="og:image" content="https://alexconnat.github.io/img/Master-Thesis/marc-privacy.jpg" />
+<meta property="og:type" content="article" />
+    <meta property="article:published_time" content="2019-09-10T18:00:00&#43;02:00" />
+    <meta property="article:modified_time" content="2020-08-04T17:38:51&#43;02:00" />
+    
+    <meta property="article:section" content="posts" />
+
+
+
+    
+</head>
+
+    <body>
+        <div class="container">
+            
+    <header class="header" data-scroll-header>
+        
+            <div class="header-wrapper">
+                <div class="header-inner">
+                    
+    <div class="site-brand">
+        
+            <a href="/" class="brand">Alex Connat | Blog</a>
+        
+    </div>
+
+                    <nav class="nav">
+    <ul class="menu" id="menu">
+        
+            
+        
+        
+        
+        
+            
+                <li class="menu-item"><a href="/posts/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon archive"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg><span class="menu-item-name">Posts</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/categories/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon th"><path d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"/></svg><span class="menu-item-name">Categories</span></a>
+                </li>
+            
+        
+            
+                <li class="menu-item"><a href="/about/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="icon user-circle"><path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 96c48.6 0 88 39.4 88 88s-39.4 88-88 88-88-39.4-88-88 39.4-88 88-88zm0 344c-58.7 0-111.3-26.6-146.5-68.2 18.8-35.4 55.6-59.8 98.5-59.8 2.4 0 4.8.4 7.1 1.1 13 4.2 26.6 6.9 40.9 6.9 14.3 0 28-2.7 40.9-6.9 2.3-.7 4.7-1.1 7.1-1.1 42.9 0 79.7 24.4 98.5 59.8C359.3 421.4 306.7 448 248 448z"/></svg><span class="menu-item-name">About</span></a>
+                </li>
+            
+        
+            
+                
+                    
+                    
+                        <li class="menu-item">
+                            <a id="theme-switcher" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon theme-icon-light"><path d="M193.2 104.5l48.8-97.5a18 18 0 0128 0l48.8 97.5 103.4 -34.5a18 18 0 0119.8 19.8l-34.5 103.4l97.5 48.8a18 18 0 010 28l-97.5 48.8 34.5 103.4a18 18 0 01-19.8 19.8l-103.4-34.5-48.8 97.5a18 18 0 01-28 0l-48.8-97.5l-103.4 34.5a18 18 0 01-19.8-19.8l34.5-103.4-97.5-48.8a18 18 0 010-28l97.5-48.8-34.5-103.4a18 18 0 0119.8-19.8zM256 128a128 128 0 10.01 0M256 160a96 96 0 10.01 0"/></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon theme-icon-dark"><path d="M27 412a256 256 0 10154-407a11.5 11.5 0 00-5 20a201.5 201.5 0 01-134 374a11.5 11.5 0 00-15 13"/></svg></a>
+                        </li>
+                    
+                
+            
+        
+            
+                
+            
+        
+    </ul>
+</nav>
+
+                    
+                </div>
+            </div>
+            
+    <input type="checkbox" id="nav-toggle" aria-hidden="true" />
+    <label for="nav-toggle" class="nav-toggle"></label>
+    <label for="nav-toggle" class="nav-curtain"></label>
+
+
+        
+    </header>
+
+
+
+
+            
+            
+    <main class="main single" id="main">
+    <div class="main-inner">
+
+        
+
+        <article class="content post" data-small-caps="true" data-align="default" data-type="posts" data-toc-num="true">
+
+            <h1 class="post-title">A Differentially-Private Decentralized Machine Learning Framework</h1>
+
+            
+
+            
+                
+            
+
+            
+                
+
+<div class="post-meta">
+    
+        
+        <time datetime="2019-09-10T18:00:00&#43;02:00" class="post-meta-item published"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon post-meta-icon"><path d="M148 288h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12zm108-12v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 96v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm-96 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm192 0v-40c0-6.6-5.4-12-12-12h-40c-6.6 0-12 5.4-12 12v40c0 6.6 5.4 12 12 12h40c6.6 0 12-5.4 12-12zm96-260v352c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48h48V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h128V12c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v52h48c26.5 0 48 21.5 48 48zm-48 346V160H48v298c0 3.3 2.7 6 6 6h340c3.3 0 6-2.7 6-6z"/></svg>&nbsp;10/9/2019</time>
+    
+    
+    
+    
+        
+        
+        
+            
+                <span class="post-meta-item category"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M464 128H272l-54.63-54.63c-6-6-14.14-9.37-22.63-9.37H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V176c0-26.51-21.49-48-48-48zm0 272H48V112h140.12l54.63 54.63c6 6 14.14 9.37 22.63 9.37H464v224z"/></svg>&nbsp;<a href="/categories/privacy/" class="category-link">Privacy</a></span>
+            
+        
+    
+    
+        
+        <span class="post-meta-item wordcount"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M497.9 142.1l-46.1 46.1c-4.7 4.7-12.3 4.7-17 0l-111-111c-4.7-4.7-4.7-12.3 0-17l46.1-46.1c18.7-18.7 49.1-18.7 67.9 0l60.1 60.1c18.8 18.7 18.8 49.1 0 67.9zM284.2 99.8L21.6 362.4.4 483.9c-2.9 16.4 11.4 30.6 27.8 27.8l121.5-21.3 262.6-262.6c4.7-4.7 4.7-12.3 0-17l-111-111c-4.8-4.7-12.4-4.7-17.1 0zM124.1 339.9c-5.5-5.5-5.5-14.3 0-19.8l154-154c5.5-5.5 14.3-5.5 19.8 0s5.5 14.3 0 19.8l-154 154c-5.5 5.5-14.3 5.5-19.8 0zM88 424h48v36.3l-64.5 11.3-31.1-31.1L51.7 376H88v48z"/></svg>&nbsp;7487</span>
+    
+    
+        
+        <span class="post-meta-item reading-time"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon post-meta-icon"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"/></svg>&nbsp;36&nbsp;mins</span>
+    
+    
+    
+</div>
+
+            
+
+            <div class="post-body">
+              <hr>
+<p>​                                                                                                   Master&rsquo;s Thesis 2019 - ETH/EPFL - Alexandre Connat</p>
+<h2 id="introduction---outline"><a href="#introduction---outline" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Introduction - Outline</h2>
+<p>In this article, I will try to give the reader a high overview of my Master Thesis: &ldquo;A Differentially-Private Decentralized Machine Learning Framework&rdquo;, realized in 2019 at the Distributed Systems Group (DSG), ETH Zürich.</p>
+<p>There are three important part in this somewhat complicated title, that I will try to break down and explain in simpler terms:</p>
+<ul>
+<li>First, we will describe what &ldquo;<strong>Decentralized Machine Learning</strong>&rdquo; means, and why is it currently such a &ldquo;hot&rdquo; topic.</li>
+<li>Second, we will discuss the notion of &ldquo;<strong>Differential Privacy</strong>&quot;, and explain why it is important and relevant to us.</li>
+<li>Finally, we will talk about how we combined both of these things in <strong>one system</strong>, show how our approach compares to existing methods, and consider how it can be further improved.</li>
+</ul>
+<h2 id="decentralized-machine-learning"><a href="#decentralized-machine-learning" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Decentralized Machine Learning</h2>
+<p>I do not think I have to re-emphasize how important <a href="https://en.wikipedia.org/wiki/Machine_learning" target="_blank" rel="noopener">Machine Learning</a> (or ML for short) has become in today&rsquo;s society. It is used in virtually every field, or any sector of the industry: supply chain, medicine, finance, … you name it!</p>
+<p>Of course, to train a Machine Learning model, you need… some <strong>data</strong>!
+And the more precise this data is, the more accurate your model will be.</p>
+<p>However, in certain fields, like medicine for instance, this data could be highly sensitive. Imagine a dataset of people suffering from Cancer, used to train medical predictive models.
+But you can also think of private industrial processes, or financial figures, that you would not want to see out there, in the wild!</p>
+<p>And finally, in the case of these big Technology companies, like Facebook or Google: you are the product, and you are also the data creator. Facebook might want to train their speech recognition system on your voice messages, but… these messages are inherently private, and first and foremost, belong to you.</p>
+<p>In parallel, as we see today, there is a big incentive to decentralize the Machine Learning training process. And here, by &ldquo;decentralizing&rdquo; I do not mean run ML algorithms on different nodes, but rather having the training data taken away from the computation source.</p>
+<p>There are actually <strong>two</strong> big incentives to do so:</p>
+<ul>
+<li>The first one being when companies do not posess the in-house ressources (or even knowledge) to run their own analytics on their data. They tend to assign this task to a cloud providers (like <a href="https://aws.amazon.com/fr/sagemaker/" target="_blank" rel="noopener">Amazon</a>, <a href="https://www.microsoft.com/en-us/research/project/automl/" target="_blank" rel="noopener">Microsoft</a>, <a href="https://cloud.google.com/automl/" target="_blank" rel="noopener">Google</a>, &hellip;) to run these expensive ML algorithm for them.
+$\rightarrow$ This is a slightly related but a separated concern from ours, and it is often refered in the litterature as &ldquo;<strong>Outsourced Computation</strong>&quot;.</li>
+<li>The second one is the one we are most interested in: when you want to run analytics on data that is spread across several different locations (i.e, machines, devices). The problem becomes particularly interesting when we cannot trust any entity to centrally aggregate all that data in one place.
+$\rightarrow$ This problem of computing something with distant agents that do not neccesarily trust each others is refered as &ldquo;<strong>Secure Computation</strong>&quot;.</li>
+</ul>
+<p>This last problem is exactly the one we discussed above, about big tech companies. Say you are willing to let Facebook train their algorithms on your voice messages. Still, you hope there is a way for them to extract the knowledge from these messages, without learning anything in particular that could directly identify you. And above all, you do not want to send them directly these messages! You don&rsquo;t trust them. This would completely violate your privacy.</p>
+<p>Nevertheless, this is currently what is happening, as the scandals from these past weeks show us, despite Mark&rsquo;s reassuring statements during his last keynote on April 11: <br>
+11/04/2019 - <a href="https://www.independent.co.uk/life-style/gadgets-and-tech/news/amazon-alexa-echo-listening-spy-security-a8865056.html" target="_blank" rel="noopener">Amazon admits employees listen to Alexa conversations</a> / <a href="https://www.forbes.com/sites/davidphelan/2019/04/12/amazon-confirms-staff-listen-to-alexa-conversations-heres-all-you-need-to-know/#6b979f8c5d9d" target="_blank" rel="noopener">Why does it matter</a> <br>
+13/08/2019 - <a href="https://www.theguardian.com/technology/2019/aug/13/facebook-messenger-user-recordings-contractors-listening" target="_blank" rel="noopener">Facebook admits contractors listened to users&rsquo; recordings without their knowledge</a> <br>
+15/08/2019 - <a href="https://techcrunch.com/2019/08/15/daily-crunch-microsoft-admits-humans-can-listen-to-skype-cortana-audio/" target="_blank" rel="noopener">Microsoft admits humans can listen to Skype, Cortana audio</a> <br></p>
+<p><img src="/img/Master-Thesis/marc-privacy.jpg" width="600px" /></p>
+<p>This is the first of two concerns in Decentralized Machine Learning, that I will call &ldquo;input privacy&rdquo; (or input <em>secrecy</em>). The second one being the &ldquo;differential privacy&rdquo; of the model, that we will dicuss in more details later on.</p>
+<blockquote>
+<p>Note that here, &ldquo;input&rdquo; has to be taken in the broader sense of &ldquo;<em>whatever enters into the ML system</em>&quot;, and does not necessarily mean the raw data (your raw voice message, in the above example). For instance, if the raw data is a simple integer $x$, the input to the ML system could be a function $h(x)$ which computes $x \  \text{mod} \ 2$. Here, the evil server observing the input just sees a &ldquo;0&rdquo; or &ldquo;1&rdquo;, but it can still know the parity of $x$, and that is already a leakage, that combined with additional information might lead to a real compromision of a user&rsquo;s privacy.</p>
+<p>Protecting not only the raw input itself, but also everything that have been infered from it, is of paramount importance. For instance, as we will see later in the article, in Distributed Stochastic Gradient Descent, the input to the DML system would be a gradient vector. But as we will see afterwards, even a simple gradient could leak a lot of information on the data it has been computed upon. In some very simple case, you can imagine the gradient as just a scaled version of the raw data.</p>
+</blockquote>
+<ul>
+<li>
+<p>What I will call <strong>input privacy</strong> is when you want to protect the secrecy or at least the privacy of the input itself, being a raw training data sample or any information you can infer about it from this input.</p>
+</li>
+<li>
+<p><strong>Differential privacy</strong>, on the other hand, looks at the ML system as a whole, and cares about protecting the privacy of the training set, used to train the model. In other words, we want to address the question: &ldquo;Just by looking at my model as a white-box, or even as a black-box, how much can an adversary learn about individual data samples it has been trained on?&rdquo; <br>
+… and Guess what? A lot of things!</p>
+<blockquote>
+<p><em>White box</em> means here that the adversary can inspect internal parameters of the model. In a <em>black box</em> scenario, the ML system is reduced to a simple query mechanism: you input a sample, it outputs a prediction.</p>
+</blockquote>
+</li>
+</ul>
+<p>This leads us to talk about the three most common misconceptions people tend to have about Machine Learning:</p>
+<ul>
+<li>
+<p>That ML is some kind of <strong>magic</strong> box in which we put all our data into, and it will solve all the world&rsquo;s biggest problems.</p>
+</li>
+<li>
+<p>That ML models makes completely reasonable, <strong>fair</strong>, and undiscutable decisions.</p>
+</li>
+<li>
+<p>That it is absolutely <strong>safe</strong> to use ML in any situation, on any data.</p>
+<blockquote>
+<p>On this last point, I&rsquo;m not so much talking about the reliability or &ldquo;robustness&rdquo; of a model (broken by things like evasion attacks or dataset poisoning), but more of the privacy guarantees of a trained model itself.</p>
+</blockquote>
+</li>
+</ul>
+<p>The first two of these misconceptions are being addressed by the Machine Learning community by respectively talking about the intricacies of fine-tuning to the general public, and pushing forward research in areas like &ldquo;model interpretability&rdquo; which try to circumvent the bias models may have when trained on biased datasets. Finally this &ldquo;robustness&rdquo; problem has been addressed by things like adversarial training, explained and theorisized as soon as in <a href="https://arxiv.org/abs/1412.6572" target="_blank" rel="noopener">2014</a>, but relates more to the <strong>Security</strong> concerns of Machine Learning (<a href="https://arxiv.org/pdf/1906.06449.pdf" target="_blank" rel="noopener">and might even harm its privacy aspects</a>).</p>
+<p>However, the machine learning community seems to remain desperately blind to the last point, which considers the privacy risks of using machine learning on sensitive data.</p>
+<p>Indeed, there has been a lot of evidences in the litterature (<a href="https://www.cs.cmu.edu/~mfredrik/papers/fjr2015ccs.pdf" target="_blank" rel="noopener">M.Fredrikson et al.</a>, <a href="https://arxiv.org/abs/1610.05820" target="_blank" rel="noopener">R.Shokri et al.</a>) that <em>a trained model, even released as a black-box query system, leaks a lot of information about the data it has been trained on</em>. This is particularly true with big models such as deep neural networks, that tend more to memorize the whole dataset instead of learning general patterns in the data distribution.</p>
+<p>An adversary can leverage two types of attacks against a machine learning model:</p>
+<ul>
+<li><strong>Membership inference attacks</strong>, where the adversary learns whether or not a particular sample was part of the training dataset.</li>
+<li><strong>Model inversion attack</strong>, where the adversary reverse-engineers the model from its internal parameters leading to partial or full reconstruction of data samples.
+That&rsquo;s how for instance <a href="https://arxiv.org/abs/1802.08232" target="_blank" rel="noopener">some researchers</a> have managed to extract and reconstruct credit cards and social security numbers from a model trained on scanned emails. Or to <a href="https://www.cs.cmu.edu/~mfredrik/papers/fjr2015ccs.pdf" target="_blank" rel="noopener">recover some faces</a> from the dataset used to train a facial recognition algorithm, just querying it and using information from the confidence score vectors.</li>
+</ul>
+<p><img src="/img/Master-Thesis/ModelInversionFredrikson.png" alt="ModelInversionFredrikson" style="zoom:50%;" /></p>
+<p>In the absolute worst-case scenario possible, publishing a trained model looks a bit like publishing the training dataset itself; as some machine learning models behave a lot more like a lookup table, than a general intelligence that can recognize and identify patterns.</p>
+<p>You might argue, in some less &ldquo;extreme&rdquo; cases than scanned emails (e.g: medical records of patients), even having access to the whole dataset is not such a big deal, right? After all, it is anonymized. All you can look at is a bunch of meaningless numbers!</p>
+<p>If you really think that, don&rsquo;t worry, you just need a <strong>big recap</strong> class on Privacy research. As the years taught us, Anonymization simply <a href="https://techcrunch.com/2019/07/24/researchers-spotlight-the-lie-of-anonymous-data/" target="_blank" rel="noopener"><strong>does not work</strong></a>.</p>
+<p>In Privacy research, we generally make no assumptions about the background knowledge of an adversary. Hence, by looking at the data itself, he might be able to infer a lot more things that you think.</p>
+<p>There have been techniques developped and used in Privacy-Preserving Information Publishing to reduce the granularity of data, like <a href="https://desfontain.es/privacy/k-anonymity.html" target="_blank" rel="noopener">k-anonimity</a>, <a href="https://desfontain.es/privacy/k-map.html" target="_blank" rel="noopener">k-map</a>, <a href="https://desfontain.es/privacy/l-diversity.html" target="_blank" rel="noopener">l-diversity</a>, <a href="https://desfontain.es/PDFs/PhD/TClosenessPrivacyBeyondKAnonymityAndLDiversity.pdf" target="_blank" rel="noopener">t-closeness</a>, <a href="https://desfontain.es/privacy/delta-presence.html" target="_blank" rel="noopener">$\delta$-presence</a>, etc… and I want to talk to you about Differential Privacy, which is a powerful defition that allows us to reason in the general case, without any assumptions, and formally quantify the amount of privacy leakage with mathematical rigour.</p>
+<h2 id="differential-privacy"><a href="#differential-privacy" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Differential Privacy</h2>
+<p>Informally, a data process (say a machine learning algorithm, or a simpler computation on the data) is said to be <em>differentially private</em> if its output run over 2 neighboring datasets is approximatively the same.</p>
+<blockquote>
+<p>We call <em>neighbours datasets</em>, two datasets only differing by one sample</p>
+</blockquote>
+<p>This is what captured by this definition:
+$$
+\mathbb{P}[A(D_1)=O] \le e^\varepsilon\cdot\mathbb{P}[A(D_2)=O]
+$$</p>
+<blockquote>
+<p>Of course, we want epsilon to be as small as possible</p>
+</blockquote>
+<p>Imagine you have a database $D_1$ containing the salaries of $n$ people, from which you remove user &ldquo;Joe&rdquo; to obtain this second database $D_2$ of size $n-1$. We will define our algorithm &ldquo;$A$&rdquo; as a simple averaging operation. If our algorithm is differentially-private, it should respect this formula. In other terms, it should output approximately the same value on D1, or on D2, such that it would be undistinguishable for an adversary whether Joe was or not in the dataset, just by looking at this value.</p>
+<p><img src="/img/Master-Thesis/differential-privacy.png" alt="differential-privacy" style="zoom:30%;" /></p>
+<p>As you may imagine, this requires the algorithm to introduce some randomness (i.e some <strong>noise</strong>) in the computation process.</p>
+<blockquote>
+<p>Looking at the formula, from a Bayesian perspective, this &ldquo;$\epsilon$&rdquo; represents the &ldquo;amount of a posteriori knowledge&rdquo; that an attacker gains, after looking at the output of $A$.</p>
+<p>For instance, let&rsquo;s say that an attacker was 50% certain that a target was in the dataset (i.e he has no clue), a $\epsilon$ of 1.1 would mean that by observing the output of $A$, he can &ldquo;update&rdquo; his suspicion to up to 75%.</p>
+<p>As the noise is inversely proportional to $\epsilon$, the bigger the noise, and the smaller $\epsilon$ is, hence increasing the uncertainty of an adversary and leading to good privacy guarantees. However, too much noise would completely destroy the utility of the algorithm.</p>
+</blockquote>
+<p>Understanding this definition from an intuitive perspective will help us fully comprehend the rest of the article. A differentially-private ML training algorithm is no different from our example above of a differentially-private &ldquo;salary averaging system&rdquo;. The only difference is what we call $A$ here is the method used to <strong>train</strong> a ML model. In this case, the output is the trained model (or rather the set $O$ of possible models) itself. I think this is what brings a lot of confusion. To me, it never made sense to say &ldquo;this ML algo <strong>is</strong> DP&rdquo;. But I would rather say &ldquo;this ML algorithm has been trained in a differentially-private manner&rdquo;.</p>
+<h2 id="differentially-private-machine-learning"><a href="#differentially-private-machine-learning" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Differentially Private Machine Learning</h2>
+<p>I want to motivate the rest of the article by a simple example taken from the Threat Intelligence world:
+Every day, companies receive thousands of malwares, and use anti-viruses and tools to detect and categorize these malwares. However, hackers are always more clever and now easily manage to evade those rule-based detection mechanisms. This led the security industry to design machine learning-based tools and rely on Threat Intelligence to classify new malwares.</p>
+<p>Each company typically has to adapt such a system to their infrastructure, by training these ML systems on large corpuses of evidences that they gathered. This data could be highly sensitive as it could include hostnames, IP addresses, memory dumps, parts of the filesystem, …</p>
+<p>However, companies (especially medium-size ones) generally cannot gather a huge amount of intelligence by themselves, and would benefit from other companies knowledge and insights. In his <a href="https://www.ted.com/talks/caleb_barlow_where_is_cybercrime_really_coming_from" target="_blank" rel="noopener">TED Talk</a>, Caleb Barlow, an ex-vice president of IBM security, compares cyberattacks to pandemics and show we should respond in the same way, and incentivize companies to openly share information about their breaches and infections.</p>
+<blockquote>
+<p><em>[…] Let&rsquo;s think of the response we see to a healthcare pandemic: SARS, Ebola, bird flu, Zika. What is the top priority? It&rsquo;s knowing who is infected and how the disease is spreading. Now, governments, private institutions, hospitals, physicians &ndash; everyone responds openly and quickly. This is a collective and altruistic effort to stop the spread in its tracks and to inform anyone not infected how to protect or inoculate themselves.</em></p>
+<p><em>Unfortunately, this is not at all what we see in response to a cyber attack. Organizations are far more likely to keep information on that attack to themselves. Why? Because they&rsquo;re worried about competitive advantage, litigation or regulation. We need to effectively democratize threat intelligence data. We need to get all of these organizations to open up and share what is in their private arsenal of information. […]</em></p>
+</blockquote>
+<p>This idealistic view might become reality if we can get rid of the fear companies would have to openly share potentially sensitive information. To my opinion, this fear is even more intense as the one we might have from Facebook reading personal conversations of users, as this one is specifically business- and profit-oriented.</p>
+<p>So let&rsquo;s take this example of a malware classifier. We will consider a black-box machine learning algorithm (you might think of a deep neural network, or any kind of fancy architecture of your choice) which takes as input some suspicious files along with their context (extracted Indices Of Compromise (IOCs) and identified Tactics, Techniques and Procedures (TTPs)) and returns the category of the malware, one among these 10 classes:</p>
+<img src="/img/Master-Thesis/malware-classifier.png" width="600px">
+<p>That&rsquo;s where we introduce the idea of <strong>Knowledge Transfer</strong>. <br>
+Remember, companies do not want to share their private information, but just the necessary knowledge one can extract from it to help train a global model, without taking the risking that the latter remembers any information that could be used to identify any of their data samples in particular.</p>
+<p>The idea goes as follows:</p>
+<ol>
+<li>
+<p>Each company trains a local model <strong>on their own private dataset</strong>. We call these models &ldquo;teacher models&rdquo;, or simply &ldquo;teachers&rdquo;.</p>
+<blockquote>
+<p>Each of those models could have a different architecture, as long as they remain 10-classes classifiers as in the example above.
+*<u>**NB:*<em></u> We assume (and this is a primordial assumption) that all companies&rsquo; datasets are disjoint. In practice, one can check quite efficiently that the intersection between any two pairs of datasets is empty using <a href="https://en.wikipedia.org/wiki/Private_set_intersection" target="_blank" rel="noopener">Private Set Intersection</a> protocols.</em></p>
+</blockquote>
+</li>
+<li>
+<p>Once all of these teacher models have been sufficiently trained, we ask them to <strong>predict on public data</strong> samples. Their prediction is called a &ldquo;vote&rdquo;, and it only consists in the <strong>class</strong> that their model predicted.</p>
+<blockquote>
+<p><em><strong><u>NB:</u></strong></em> We will call &ldquo;prediction&rdquo; the output of a teacher model, and &ldquo;vote&rdquo; will refer to what the client send to the aggregator.</p>
+</blockquote>
+</li>
+<li>
+<p>We collect all these votes and aggregate them centrally, to perform some kind of &ldquo;<strong>noisy majority voting</strong>&quot;: The class with the most votes is selected, and this public data sample is labeled accordingly.</p>
+<blockquote>
+<p>Why noisy? Remember, we want to make our decision process differentially private, hence we put some noise on top of the votes, in order to mask their true count, and hide as much as possible individual contributions (see blue/orange histograms below).</p>
+</blockquote>
+</li>
+<li>
+<p>All these public data samples, alongside with their assigned labels, will constitute the training set of a final classifier, called a &ldquo;student model&rdquo;.
+This last model can be formally proven to be differentially private, and hence could be safely released publicly, even as a white-box model.</p>
+</li>
+</ol>
+<p>This technique is refered as &ldquo;<a href="https://arxiv.org/pdf/1610.05755.pdf" target="_blank" rel="noopener">Private Aggregation of Teacher Ensembles</a>&rdquo; and has been first introduced by Nicolas Papernot and a team from Google Brain. The method provides an elegant way to guarantee the differential privacy of the student model, trained to copy the input-to-output mapping these multiple teacher models. And because no two teachers are trained on the same examples; <em>whenever they agree on what the output should be, we know that they agree because of a general pattern, rather than because they memorized something about their own training examples</em>. Hence, it is safe to copy that knowledge into the Student.</p>
+<hr>
+<h4 id="as-a-parenthesis-the-confident-gn-max-protocol"><a href="#as-a-parenthesis-the-confident-gn-max-protocol" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>As a parenthesis: The Confident GN-MAX protocol</h4>
+<p>In an <a href="https://arxiv.org/abs/1802.08908" target="_blank" rel="noopener">iteration to the PATE paper</a>, Papernot devised a way to avoid the problem of misclassification in the case when teachers do not agree. We can decide <strong>not to asign any label</strong> to a data sample if there is not a large enough consensus in teachers&rsquo; predictions around a particular class.</p>
+<p>Starting from the observation that the more confident teachers are, the more we can inject noise without risking to perturb the distribution too much (hence overthrowing the candidate with most votes), it allows us to tighten our privacy bounds, by injecting more noise when teachers agree.
+It is one of these rare cases where <a href="https://infoscience.epfl.ch/record/255811/files/p665-guerraoui.pdf" target="_blank" rel="noopener">privacy and utility are compatible</a>, and not conflicting each others.</p>
+<p>The CGNMAX procedure goes as follow:</p>
+<ul>
+<li>Let $v$ be the final aggregated votes vector (the blue histogram below). We take its maximum value, and noise it with gaussian noise with a high variance $\sigma_1$.</li>
+<li>If the obtained value is not passed above a certain threshold $T$ that we can defined as &ldquo;60% of the teachers&rdquo; for instance, it means there was probably no clear consensus among the teachers. Hence, we do not assign any label to this public sample.</li>
+<li>Otherwise, we reiterate the noising mechanism: We noised the aggregated vote vector $v$ with a gaussian noise with smaller variance $\sigma_2$ (giving a more precise estimate on the true votes distribution), and select as our label the argmax of the obtained vector.</li>
+</ul>
+<blockquote>
+<p>We designed our two protocols below to perform this &ldquo;consensus check&rdquo; but for the sake of simplicity, we will not talk about it in this article.</p>
+</blockquote>
+<hr>
+<p>We might now think we can tick our two boxes:</p>
+<ul>
+<li>
+<p>Differential privacy, … <strong>Check!</strong> The final model is differentially private, and an adversary will hardly find evidences of any individual data samples just by inspecting it.</p>
+</li>
+<li>
+<p>Input privacy, … <strong>Wait a minute..!</strong> Even though we do not send the raw data sample to a server, there is still a central entity collecting and noisily aggregating the votes from every teacher. It means that <u>this entity leans any individual vote</u>. To express it the same way as above, each teacher does not send $x$ but some $h(x)$ to the server, $h$ representing here their ML model. An adversary might infer a lot of information from that vote alone!</p>
+<blockquote>
+<p>In our example of malware classifier, let&rsquo;s assume an adversarial aggregator (server) has knowledge that the model of Company3 never predicts category &ldquo;Trojan&rdquo;, except if the company had trained it on some malwares containing <a href="https://en.wikipedia.org/wiki/WannaCry_ransomware_attack" target="_blank" rel="noopener">WannaCry</a> payloads. In that case, if the aggregator sees Company3 predicts &ldquo;Trojan&rdquo;, it can be pretty certain the company was previously affected by the nasty ransomware.</p>
+<p>Not only the individual votes, we really want to protect the whole distribution of votes. With sufficient background knowledge, an adversary might be able to deduce something from the blue histogram below, alone. It can for instance rely on extreme cases like classes that have zero votes, or exactly one vote.</p>
+</blockquote>
+</li>
+</ul>
+<p>If we consider this voting process itself as our differential privacy mechanism, this problem looks a bit like the <a href="https://desfontain.es/privacy/local-global-differential-privacy.html" target="_blank" rel="noopener">Local vs. Global Differential Privacy</a> problem, which put into perspective two paradigms:</p>
+<ul>
+<li>In the <strong>Global DP</strong> paradigm, a central aggregator collect data about individuals. Each of these individuals send their data to the aggregator without noise, and the latter is responsible to transform that data using a differentially private mechanise, i.e injecting the noise itself.</li>
+<li>In the <strong>Local DP</strong> paradigm, the aggregator no longer has access to the &ldquo;true&rdquo; data, as each individual is reponsible to noise their data before sending it for aggregation.</li>
+</ul>
+<p>The local differential privacy model has the advantage of getting rid of all trust we must have in the aggregator. However, since each individial needs to inject enough noise in their data to hide it properly from the aggregator, the aggregate result then become less accurate than in the global model where the differentially private mechanism is only applied once, and requires a lot less noise to still get a decent $\epsilon$.</p>
+<p>So to take again our example of malware classification, in our previous scheme, each individual teacher would send its vote to the aggregator. Once collected, the repartition of votes would look something like this:</p>
+<img src="/img/Master-Thesis/histogram-votes.png" width="700px">
+<p>It seems there is a big consensus around class &ldquo;Adware&rdquo; even though the class &ldquo;Spyware&rdquo; has a non negligeable weight. Teachers also have marginally voted for class &ldquo;Phishing&rdquo; and &ldquo;Miner&rdquo;. As always, there are also some outliers and &ldquo;true&rdquo; noise in these votes, misclassification could happen.</p>
+<p>On top of these votes, the aggregator adds some gaussian noise, with appropriate variance $\sigma^2$ to hide the true vote counts per class. The standard deviation  $\sigma$ has to be carefully selected and depends on our &ldquo;privacy budget&rdquo; $\epsilon$.
+The new noisy histogram would look something like this:</p>
+<img src="/img/Master-Thesis/histogram-noisy-votes.png" width="700px">
+<p>We can see that the noise perturbed a bit the distribution, but kept the order of the two most prominent classes intact (although decreasing a bit the consensus formed around <em>&ldquo;Adware&rdquo;</em> and increasing the importance of <em>&ldquo;Spyware&rdquo;</em>). Therefore, the assigned label will remain <em>&ldquo;Adware&rdquo;</em> in this case.</p>
+<p>This is not good enough, as the aggregator learns any individual vote. Indeed, <strong>he is responsible</strong> for properly noising the votes, and receive them un-noised. A simple workaround would be to allow indeed each client to noise their own vote before sending it to the server / aggregator. Assuming we do want to have a total noise of variance $\sigma^2$, fortunately gaussian random variables add up nicely, and if we have $n$ teachers, we can have each one noising its vote with a gaussian noise of variance $\sigma^2/n$.</p>
+<p>However, this typically gives us a noise value so small that it cannot hide the true vote value from the aggregator (see on the graph below, the noised vote still shows a clear peak on the true class value). The final model will indeed be differentially private, it doesn&rsquo;t change the algorithm, but it doesn&rsquo;t REALLY respect the &ldquo;input privacy&rdquo; problem we talked about earlier.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Un-noised vote</th>
+<th align="center">Noised vote  •  $\mathcal{N}(\mu=0, \sigma = 0.3)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="/img/Master-Thesis/one-vote.png" alt=""></td>
+<td align="center"><img src="/img/Master-Thesis/one-noisy-vote.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Note that the argmax of an individual noised vote vector might not necessarily be representative of the true predicted class of this teacher, but as we sum these votes up, if the teachers agree, a clear majority should emerge anyway.</p>
+</blockquote>
+<blockquote>
+<p>Also note that one &ldquo;client&rdquo; can train multiple teachers. It just had to divide its dataset into $m$ parts, train $m$ teacher models on those disjoint datasets, and aggregate their predictions in one vote vector, before sending it to the server (e.g: [0,0,12,0,0,2,0,1,0,0] for $m = 15$). In the local model, it would noise this vector with a variance equal to $m$ times the variance used to noise a single vote.</p>
+</blockquote>
+<p>So, true input privacy is only guaranteed if we trust a central aggregator. In our example, it could be a server from the Electronic Frontier Foundation, for instance. But in general, having a trusted unpartial server available to perform the aggregation is a very strong assumption.</p>
+<p>So, <strong>how can we get rid of that trust</strong>? This is exactly the sort of question to which Secure Computation has the answer.</p>
+<h2 id="secure-computation"><a href="#secure-computation" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Secure Computation</h2>
+<p>Secure computation is a way to compute a function $y = f(x_1,x_2, …, x_n)$ on $n$ private inputs typically held by $n$ individuals (parties) which does not necessarily trust each other.
+The output of the computation could be delivered to one or several input parties, or even a distinct individual. The latter should only lean the value $y$, and never learn about these inputs $x_1, x_2, …, x_n$.</p>
+<p>To solve our problem of aggregating teachers votes in a secure manner, we can use two different approaches:</p>
+<ul>
+<li>
+<p><strong>General Secure Multi-Party Computation</strong> (MPC) protocols, which allow us to compute any type of function. That way, we will be able to compute the argmax of our noisy sum of votes</p>
+</li>
+<li>
+<p>Specific protocols, <strong>only tailored for secure aggregation</strong>, i.e summing all these private inputs $x_1, x_2, …, x_n$.</p>
+</li>
+</ul>
+<p>So we experimentally design two systems using these two different approaches, suited for two different scenarios:</p>
+<ul>
+<li>
+<p>In the <strong>first scenario</strong>, the parties are assumed to be equal in terms of <em>computation power</em>, <em>communication latency</em>, and <em>should be available</em> at all time. There are typically only a <em>few parties</em>, and they are all interconnected in a <em>Mesh architecture</em>.</p>
+<blockquote>
+<p>In this scenario, we will use a general MPC protocol</p>
+</blockquote>
+</li>
+<li>
+<p>In the <strong>second scenario</strong>, we assume a <em>lot of non-reliable and weak</em> devices (in terms of computation power), interacting with a central server in a <em>Star architecture</em>. A large portion of these devices can typically <em>drop out</em> during the computation, without affecting the protocol (their input is simply not taken into consideration).</p>
+<blockquote>
+<p>In this scenario, we will use a secure aggregation protocol</p>
+</blockquote>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">First scenario</th>
+<th align="center">Second Scenario</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="/img/Master-Thesis/hospitals-scenario.png" alt=""></td>
+<td align="center"><img src="/img/Master-Thesis/fedlearning-scenario.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Choosing one or the other depends on the use-case. Of course, general MPC is much more expressive, but is typically quite slow and greedy in terms of communication, while the other approach is more suited for a real-world environement and typically offer better performance, but is less adaptable to a system design change.</p>
+</blockquote>
+<h3 id="first-scenario---mpyc"><a href="#first-scenario---mpyc" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>First scenario - MPYC</h3>
+<p>For our first scenario, we relied on a General Multiparty Computation scheme based on homorphic secret sharing. We implemented it in Python with the <a href="https://github.com/lschoe/mpyc" target="_blank" rel="noopener">mpyc library</a>, which is based on Shamir secret sharing and Pseudorandom secret sharing.</p>
+<p>Secret sharing is a way to split a secret into $n$ different shares and typically distribute these shares to different parties. The secret could be reconstructed out of all (or a portion) of these shares.</p>
+<p>The most interesting case is of course when only a portion (a subset) of these shares allow to reconstruct the full secret. This is called <strong>t-out-of-n threshold secret sharing</strong> (or $(t,n)$ secret sharing). Such a scheme is made of two algorithms:</p>
+<ul>
+<li>$[ \ [![ s ]!]_1, [![ s ]!]_2, …, [![ s ]!]_n ] \leftarrow SS.split(s, t, n)$, which splits our secret $s$ into $n$ shares, from which at least $t$ are needed to reconstruct $s$.</li>
+<li>$s&rsquo; \leftarrow SS.recons( [ \ [![ s ]!]_i, [![ s ]!]_j, … ] )$, which reconstructs the original secret $s$ if $| \ [ \ [![ s ]!]_i, [![ s ]!]_j, … ] \ | \geq t$,  or outputs <em>any value</em> if not enough shares are provided, or incorrect shares for our secret $s$.</li>
+</ul>
+<blockquote>
+<p>These two algorithms must respect two properties (taken from the book &ldquo;A Practical Introduction to Secure Multi-Party Computation&rdquo;):</p>
+<ul>
+<li>
+<p><em><strong>Correctness</strong></em>. Let $[ \ [![ s ]!]<em>1, [![ s ]!]<em>2, …, [![ s ]!]<em>n ] \leftarrow  SS.split(s, t, n)$. Then:
+$$
+\mathbb{P}[∀k ≥ t, SS.recons( [ \ [![ s ]!]</em>{i_1}, [![ s ]!]</em>{i_2}, …, [![ s ]!]</em>{i_k} ] ) = S] = 1
+$$</p>
+</li>
+<li>
+<p><em><strong>Perfect Privacy</strong></em>. Any set of shares of size less than <em>t</em> does not reveal anything about the secret in the information theoretic sense. More formally, for any two secrets $a, b \in D$ and any possible vector of shares $v = [v1, v2, &hellip;, vk]$, such that $k &lt; t$ (and $|_k$ denotes appropriate projection on a subspace of <em>k</em> elements):
+$$
+\mathbb{P}[v = SS.split(a)|_{k}] = Pr[v = SS.split(b)|_{k} ]
+$$</p>
+</li>
+</ul>
+</blockquote>
+<p>It is not hard to find examples of $(n,n)$ secret sharing (one that creates $n$ shares, and which requires all $n$ shares to reconstruct the secret). Multiplicative secret sharing for instance, needs all shares to be multiplied together to reconstruct the secret. We can also think about how easy it is to simply onion-encrypt a secret $S$ with $n$ keys.</p>
+<blockquote>
+<p><strong><u>NB:</u></strong> In general, we can create an $(n,n)$ secret sharing scheme by taking any group $G$ with group operation ∗, mapping the shared secret into a group member $S$, selecting $n−1$ random (uniformly distributed) group elements, and publishing the shares $s_1,s_2,…,s_{n-1}$ and the last one, being computed as $s_n = S∗(s_1∗s_2∗…∗s_{n−1})^{−1}$.</p>
+<p>In multiplicative secret sharing, we work in the group $\mathbb{Z}_p^*$ (for a prime $p$), and the operation * is the simple mutliplication.</p>
+</blockquote>
+<p>This is information-theorically secure, because anynone in the possession of $n−1$ shares, will still have no information on the shared secret $S$. For each possible value of $S$, there is a possible value of the missing share, and this defines the cardinality of the search space.</p>
+<p>The analogy with onion-encryption (although not theorically the same as secret sharing) is exactly what we see in spy movies: The access to the nuclear button is locked with 3 keys, owned by 3 different Russian generals, and it is required to enter the 3 keys at the same time to unlock the mechanism.</p>
+<p>Now, what if we only want to require any 2 out of these 3 keys? This would be analogous to (2,3) secret sharing, a 2-out-of-3 scheme. I&rsquo;m not an expert in padlock mechanism, but I&rsquo;m sure it exists&hellip;</p>
+<p>In theory we could build a t-out-of-n from a n,n, but requires a exploding combinatorially many locks and keys.</p>
+<p>Building such schemes from a more abstract standpoint requires the problem to be reformulated as an algebraic system of $n$ equations, with $t$ unknowns.</p>
+<ul>
+<li>
+<p><strong>Shamir&rsquo;s scheme</strong>, relies on polynomial interpolation, where each share is a value $y_i = f(x_i)$ equal to a polynomial of degree $t-1$ evaluated in some points $x_1$, $x_2$, …, $x_n$.
+Indeed, $d$ distinct points $(x_i, y_i)$ are sufficient to completely determine a polynomial of degree $d-1$ (2 points for a line, 3 points for a quadratic polynomial, etc…), but any subset of</p>
+</li>
+<li>
+<p><strong>Blakey&rsquo;s scheme</strong>, relies on geometric considerations to reconstruct the location of a point at the intersection of several hyperplanes, where each share is the equation of an hyperplane. Indeed, in 3 dimensions for instance, 2 surfaces (hyperplanes of dimension 3) would intersect in a line (i.e a hyperplane of dimension 2), and you would need a 3rd hyperplane to reduce further the dimensionality of the intersection to a single point.</p>
+</li>
+<li>
+<p>Other schemes, like <strong>Mignotte&rsquo;s</strong> or <strong>Asmuth-Bloom&rsquo;s</strong> schemes rely on the <a href="https://en.wikipedia.org/wiki/Secret_sharing_using_the_Chinese_remainder_theorem" target="_blank" rel="noopener">Chinese Remainder Theorem</a>, where each share is a reduction of the secret modulo some prime numbers.</p>
+</li>
+</ul>
+<hr>
+<p>Our (NAIVE) protocol for $m$ parties + 1 server (which is also a computation party, but only an output party, not an input party) would go as follows:</p>
+<p>We want to compute $v = \sum_{i=1}^{m} v_i$</p>
+<ol>
+<li>
+<p>Each party $i$ generates shares of its private noisy vote vector $v_i$ (actually just its vote vector, noised with appropriate random Gaussian noise) and distribute one to every other party: $[![ v_i ]!]_1, [![ v_i ]!]_2, …, [![ v_i ]!]_m$</p>
+</li>
+<li>
+<p>Once all the shares are exchanged, without further communication each party $i$ adds its shares of $v_1, v_2, …, v_m$. As the addition operation is homomorphic, they now hold a share of the sum $v$ : $[![ v ]!] = \sum_{j=1}^{m}  [![ v_j ]!]_i$.</p>
+</li>
+<li>
+<p>All the parties now send their share of this sum $v$ to the aggregator, which reconstructs it.</p>
+</li>
+<li>
+<p>The aggregator selects the argmax of $v$ as the assigned label.</p>
+</li>
+</ol>
+<blockquote>
+<p>Note that in the MPC paradigm, every node is a &ldquo;computation party&rdquo;, so what we called so far the <em>server</em> or <em>aggregator</em> is an &ldquo;output party&rdquo; (i.e receiving an output value), while the other nodes, the <em>clients</em> are &ldquo;input parties&rdquo; (i.e contributing an input value).</p>
+</blockquote>
+<p>Following our assumptions of a honest-but-curious setting, clients will respect the protocol (e.g properly noise their input vector), however they will try to learn as much as possible with what is available to them. In particular, clients might want to collude with the server, and share their inputs/outputs.</p>
+<p>In this case, they manage to &ldquo;un-noise&rdquo; the distribution, by substracting the noise part they generated to the final noisy aggregated sum. Their goal is to learn a closer estimate to the blue histogram above, and break differential privacy.</p>
+<p>Hence, we have to design a way for the clients to obliviously send their noise to the server, i.e send a noise value without knowing it. Of course, the server, which will receive it, should neither be aware of this noise value, and aggregate all these noise values together without asking questions.</p>
+<p>We can build this system incrementally:</p>
+<p>Our first idea is to construct an <a href="https://en.wikipedia.org/wiki/Oblivious_transfer" target="_blank" rel="noopener">Oblivious Transfer</a> mechanism, between each client and the server. This means that each client will generate $d$ different noise values (gaussian noise, with same variance), and the server will select 1 out of these $d$, without the client knowing which one.</p>
+<blockquote>
+<p>Without loss of generality, we will choose here $d=2$</p>
+</blockquote>
+<p>Formally, oblivious transfer is defined as follow:
+A sender $S$ holds 2 private inputs $x_0$ and $x_1$, a receiver $R$ holds a selection bit $b = {0,1}$. The receiver must obtain $x_b$ must not learn any information about $x_{b-1}$. The sender must not learn the value of $b$ (i.e it must not know which of the two inputs was selected).</p>
+<p>In our case, we do not require the server to obtain <strong>no</strong> information about the other (non-selected) noise value, but we absolutely do not want the client to learn which of its inputs was selected by the server. So it is obivious in only one direction. A simple way to implement this protocol is just to send both values to the server, and let it select one.</p>
+<p>This is an essential first step, but there is still a catch, since we assumed clients could collude with the server, the latter could communicate which private noise value it selected.</p>
+<p>We hence need to design a system in which the server does not even <strong>know</strong> which value it selected. In other terms, the selection bit $b$ must be oblivious to him.</p>
+<p>There is a simple way all parties could come up with a shared list of $m$ random bits (i.e, 1 for each party):</p>
+<ol>
+<li>We ask each party to generate an array of random bits $r_i$ = [0, 0, 1, 0, 1, …]</li>
+<li>They secret share it with every other party</li>
+<li>They XOR their shares of each array $r_1, r_2, …, r_m$ (element-wise)</li>
+<li>They now hold shares of a final array $r$ which contains random bits, derived with the help of everyone</li>
+</ol>
+<p>This array $r$ will contain the selection bits for every party. I.e the server will select the private value $x_{r[j]}$ of party $j+1$ (**NB:** We assumed list indexing started at zero, but our first client has index &ldquo;1&rdquo;).</p>
+<blockquote>
+<p>This way, there is no way for the aggregator to recover the un-noised value of the aggregate sum. It would require <strong>every</strong> client to send their <strong>two</strong> generated noise values, and then the server would need to try the $2^m$ noise combinations ($d^m$ in the more general case) to remove from the noisy aggregate until eventually finding a combination of values that would give a integer number (i.e the true aggregate value).</p>
+</blockquote>
+<p>Full Protocol: (not CGNMAX)</p>
+<ol>
+<li>
+<p>Each party $i$ draws two random gaussian noise values from the same distribution with appropriate variance, and applies it to its vote vector. It obtain two noisy vectors $v_i^0$ and $v_i^1$.</p>
+</li>
+<li>
+<p>Each party secret shares both of these vectors with every other party.</p>
+</li>
+<li>
+<p>Each party derives the shares of this list of selection bits $r$ (<em><strong><u>NB</u></strong></em>: They do not recombine their shares and recover the raw list of bits, we want to do the selection under MPC).</p>
+</li>
+<li>
+<p>Each party add the shares of vote vectors they have according to the selection list $r$, i.e, still under MPC they will do $[v] = \sum_{i=1}^m v_i^{r[i-1]}$</p>
+</li>
+<li>
+<p>All the parties now send their share of this sum $v$ to the aggregator, which reconstructs it.</p>
+</li>
+<li>
+<p>The aggregator selects the argmax of $v$ as the assigned label.</p>
+</li>
+</ol>
+<hr>
+<p><strong>TODO:</strong> In the CGNMAX one, parties don&rsquo;t directly noise their votes vector. Each of them generate a noise part, which are aggregated together into a total noise, used to noise the maximum value of the array. If this value passes a certain threshold, we repeat the process of directly noising the votes vectors themselves, and selecting the argmax of the aggregate.</p>
+<hr>
+<p>We used mpyc because it efficiently deals with communication (we do not have to reimplement that) and it is in Python, which is easily readable, and understandable by the Machine Learning community (as their language of predilection).
+They state that this is an academic library, perfect for prototyping.</p>
+<p>Each party runs the same code, and they have a &ldquo;Party ID&rdquo; <code>pid</code>, so if you want to do a disjonction among parties (as in our case, the distinction between the server (aggregator) and the client), you can branch depending on this pid.</p>
+<p>Let&rsquo;s look at the code:</p>
+<p><a href="https://github.com/AlexConnat/MPC-Aggreg/blob/master/main.py" target="_blank" rel="noopener">https://github.com/AlexConnat/MPC-Aggreg/blob/master/main.py</a></p>
+<p><strong>TODO:</strong> Explain portion of the code like mpc.input(), mpc.output(), etc… (important functions) -&gt; Already in comments</p>
+<p><strong>TODO:</strong> Put graph of performances with different number of clients (+Interpolation) and different latency LAN/WAN (explain how we delayed the LAN) + Small Conclusion.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Few Clients</th>
+<th align="center">More Clients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="/img/Master-Thesis/runtime-mpc-1.png" alt=""></td>
+<td align="center"><img src="/img/Master-Thesis/runtime-mpc-2.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<h3 id="second-scenario---secagg"><a href="#second-scenario---secagg" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Second scenario - SecAgg</h3>
+<p>For the second scenario, we make use of a protocol by Google, defined in the paper &ldquo;<a href="https://ai.google/research/pubs/pub47246/" target="_blank" rel="noopener">Practical Secure Aggregation for Privacy-Preserving Machine Learning</a>&quot;, that we slightly adapt for our needs.</p>
+<p>This protocol uses pairs of self-cancelling blinding vectors to hide the private input of each client, while still getting the correct result when aggregated all together.</p>
+<p>The big advantage of this protocol is it can support arbitrary large input vectors, without increasing much performance, and can tolerate up to half of the clients dropping out. However, it is only designed for secure aggregation of vectors, and you cannot for instance perform a secure maximum, or secure argmax on the resulting vector, as with mpyc. The server will eventually learn the full aggregated vector.</p>
+<p>To give the intuition behind the protocol, I will take the example of <strong>three clients</strong>, that could be easily generalized to an arbitrary number of clients.</p>
+<p>So we have three clients, each one having its own private input vector $x_i$. For our application, you can imagine these $x_1, x_2, x_3$ as their votes vector. We want to have the server obtain $z = \sum_{}^{} x_i$ without learning any individual $x_i$.</p>
+<ol>
+<li>
+<p>All three clients will <strong>exchange a &ldquo;mask&rdquo;</strong> with each other (even though they communicate through encrypted channels, in practice, all messages go though a central server). This mask is simply a vector of same cardinality as the inputs, containing uniformily distributed random values.</p>
+<ul>
+<li>Client 1 and client 2 will exchange a mask $p_{12}$.</li>
+<li>Client 1 and client 3 will exchange a mask $p_{13}$.</li>
+<li>Client 2 and client 3 will exchange a mask $p_{23}$.</li>
+</ul>
+</li>
+<li>
+<p>Clients will mask their input $x_i$ by <strong>adding the masks they share with any clients whose ID is higher</strong> than theirs (assume a total order on clients IDs) and <strong>substract the ones they share with clients with lower IDs</strong>. Once masked, they send their output $y_i$ to the server.</p>
+<ul>
+<li>$y_1 = x_1 + p_{12} + p_{13}$</li>
+<li>$y_2 = x_2 + p_{23} - p_{12}$</li>
+<li>$y_3 = x_3 - p_{13} - p_{23}$</li>
+</ul>
+</li>
+<li>
+<p>The server performs a simple summation of the inputs $y_i$ it received from clients, as indeed: <br></p>
+</li>
+</ol>
+<p>$$
+\sum_{u=1}^3 y_u = x_1 + \cancel{p_{12}} - \cancel{p_{12}} + x_2 + &hellip; = \sum_{u=1}^3 x_u = z
+$$</p>
+<p>However, this protocol, as simple as it could be, has two drawbacks:</p>
+<ul>
+<li><strong>Dropout resistance</strong> (+ explain Double Masking, to make it secure against late messages (or lying in the malicious case))</li>
+<li><strong>Communication overhead</strong> (-&gt; Explain PRG, and the seed agreed with DHKE)</li>
+</ul>
+<p>Indeed, we can observe that the protocol described above is not tolerating any clients dropping out, i.e clients not responding anymore. In our example, what would happen if the second client would crash just after having exchanged masks with every other client? The server would hence receive:</p>
+<ul>
+<li>$y_1 = x_1 + p_{12} + p_{13}$</li>
+<li>$y_2 =$ ???</li>
+<li>$y_3 = x_3 - p_{13} - p_{23}$</li>
+</ul>
+<p>The server still want to compute the sum of private inputs of the <strong>remaining</strong> clients $z&rsquo; = x_1 + x_3$, but it cannot just add $y_1 + y_3$ as only the mask $p_{13}$ would cancel out, and the masks shared with the dropped out client ($p_{12}$ and $p_{23}$) would remain in the sum, hence yielding a wrong result.</p>
+<p>To solve that problem, during masks derivation and exchange phase, each client should share with every other a 2-out-of-3 secret share of its masks (or a $t$-out-of-$n$, with $t= floor(n/2)+1$ in the general case).</p>
+<ul>
+<li>Client 1 sends to:
+<ul>
+<li>Client 2: $[![ p_{12} ]!]_2$ and $ [![ p_{13} ]!]_2$</li>
+<li>Client 3: $[![ p_{12} ]!]_3$ and $ [![ p_{13} ]!]_3$</li>
+</ul>
+</li>
+<li>Client 2 sends to :
+<ul>
+<li>Client 1: $[![ p_{12} ]!]_1$ and $ [![ p_{23} ]!]_1$</li>
+<li>Client 3: $[![ p_{12} ]!]_3$ and $ [![ p_{23} ]!]_3$</li>
+</ul>
+</li>
+<li>Client 3 sends to:
+<ul>
+<li>Client 1: $[![ p_{13} ]!]_1$ and $ [![ p_{23} ]!]_1$</li>
+<li>Client 2: $[![ p_{13} ]!]_2$ and $ [![ p_{23} ]!]_2$</li>
+</ul>
+</li>
+</ul>
+<p>Holding these 2-out-of-3 shares will allow the remaining clients to reconstruct the masks of the ones that dropped out…. ALREADY HAD THEM….. (3 is a bad example). It is to avoid <strong>recovery of recovery</strong></p>
+<p>With 4, is it 3-out-of-4 or 2-out-of-4 ???</p>
+<p>y1 = x1 + p12 + p13 + p14</p>
+<p><strong>y2 = x2 + p23 + p34 - p12</strong></p>
+<p>y3 = x3 + p34 - p13 - p23</p>
+<p>y4 = x4 - p14 - p24 - p34</p>
+<p>$x1 + x3 + x4 + \cancel{p13-p13} + \cancel{p14-p14} + \cancel{p34-p34} + p12 + p23 - p24$</p>
+<p>If we ask all remaining clients to send shares of masks for p12, p23, p24, as everyone has them, even if a new client drops out during this phase (say y3), we still have 2 shares of p12, 2 shares of p23, two shares of p24 which is enough to reconstruct those masks.</p>
+<p><strong>TODO:</strong> Write about communication overhead</p>
+<p>We modified a bit the protocol so that instead of sending their raw input $x_i$, each client would send a <strong>noisy</strong> version of their input (i.e, of their vote vector) $\tilde{x}_i$.</p>
+<p>What is the amount of noise each client should put?</p>
+<p>If we want a total gaussian noise with variance $\sigma^2$, and there are $n$ teachers each teacher prediction should be noised with a variance $\frac{\sigma^2}{n}$. And knowing that a teacher can send the aggregated predictions of $t$ teachers, this vote vector should be noised with variance $\frac{t}{n}\sigma^2$ (i.e a standard deviation of $\sqrt{\frac{t}{n}}\sigma$).</p>
+<p><strong>TODO:</strong> Explain mechanism to add more noise than needed (in the worst case scenario where half of the nodes drop out), and then remove the noise value of the nodes that <strong>didn&rsquo;t drop out</strong>!</p>
+<p><strong>TODO:</strong> Write about &ldquo;Multiple teachers per nodes&rdquo; (not implemented, though) -&gt; Hierarchy of teachers, to get as close as possible to the true variance value.</p>
+<p><strong>TODO:</strong> Comment the performance graphs (different number of nodes + proportion of nodes dropping out + latency)</p>
+<p><strong>TODO:</strong> Write a Small Conclusion for the chapter</p>
+<table>
+<thead>
+<tr>
+<th align="center">Few Clients</th>
+<th align="center">More Clients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="/img/Master-Thesis/runtime-secagg-1.png" alt=""></td>
+<td align="center"><img src="/img/Master-Thesis/runtime-secagg-2.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<h2 id="evaluation"><a href="#evaluation" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>Evaluation</h2>
+<p>Our evaluation is essentially the time it takes both systems to perform one iteration of the protocol and hence produce one label (or None) for a data sample.</p>
+<p>In this part, we do not measure the performance of the actual Machine Learning task, in terms of the accuracy of the student model, as this one depends solely on the amount of noise we introduced in the Knowledge Transfer mechanism. We refer the reader to Table ??? on a summary of these results for the three most common image recognition datasets.</p>
+<p>We measured this time on a EC2 AWS Machine m5.4xlarge with 16vCPUs and 64Go of RAM, with a 100GBps ethernet connexion. In our setting, all clients were hosted on the same machine, as different processes. Hence we simulated real latencies introduced by distance between nodes in a LAN or WAN environement using tc.</p>
+<h2 id="general-conclusion--future-work"><a href="#general-conclusion--future-work" class="anchor-link"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon anchor-icon"><path d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"/></svg></a>General Conclusion + Future work</h2>
+<p><strong>TODO:</strong> Compare both implementations, say how this could be further improved, etc&hellip;</p>
+<table>
+<thead>
+<tr>
+<th align="center">Few Clients</th>
+<th align="center">More Clients</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><img src="/img/Master-Thesis/runtime-both-1.png" alt=""></td>
+<td align="center"><img src="/img/Master-Thesis/runtime-both-2.png" alt=""></td>
+</tr>
+</tbody>
+</table>
+<p><strong>TODO:</strong> (re-write the &ldquo;Future Work&rdquo; section from my Thesis)</p>
+
+            </div>
+
+        </article>
+
+        
+
+        
+
+
+        
+
+
+        
+
+
+        <div class="post-share">
+
+        
+
+        <div class="share-items">
+
+            
+                <div class="share-item twitter">
+                    
+                    <a href="https://twitter.com/share?url=https://alexconnat.github.io/posts/master-thesis/&amp;text=A%20Differentially-Private%20Decentralized%20Machine%20Learning%20Framework&amp;hashtags=&amp;via=" title="Share on Twitter" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon twitter-icon"><path d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"/></svg></a>
+                </div>
+            
+
+            
+                <div class="share-item facebook">
+                    
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://alexconnat.github.io/posts/master-thesis/&amp;hashtag=%23" title="Share on Facebook" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon facebook-icon"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"/></svg></a>
+                </div>
+            
+
+            
+                <div class="share-item linkedin">
+                    
+                    <a href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://alexconnat.github.io/posts/master-thesis/&amp;title=A%20Differentially-Private%20Decentralized%20Machine%20Learning%20Framework&amp;summary=%e2%80%8b%20Master&amp;rsquo;s%20Thesis%202019%20-%20ETH/EPFL%20-%20Alexandre%20Connat%0aIntroduction%20-%20Outline%20In%20this%20article,%20I%20will%20try%20to%20give%20the%20reader%20a%20high%20overview%20of%20my%20Master%20Thesis:%20&amp;ldquo;A%20Differentially-Private%20Decentralized%20Machine%20Learning%20Framework&amp;rdquo;,%20realized%20in%202019%20at%20the%20Distributed%20Systems%20Group%20%28DSG%29,%20ETH%20Z%c3%bcrich.&amp;source=Alex%20Connat%20%7c%c2%a0Blog" title="Share on LinkedIn" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon linkedin-icon"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg></a>
+                </div>
+            
+
+            
+                <div class="share-item telegram">
+                    
+                    <a href="https://t.me/share/url?url=https://alexconnat.github.io/posts/master-thesis/&amp;text=A%20Differentially-Private%20Decentralized%20Machine%20Learning%20Framework" title="Share on Telegram" target="_blank" rel="noopener"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512" class="icon telegram-icon"><path d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm121.8 169.9l-40.7 191.8c-3 13.6-11.1 16.9-22.4 10.5l-62-45.7-29.9 28.8c-3.3 3.3-6.1 6.1-12.5 6.1l4.4-63.1 114.9-103.8c5-4.4-1.1-6.9-7.7-2.5l-142 89.4-61.2-19.1c-13.3-4.2-13.6-13.3 2.8-19.7l239.1-92.2c11.1-4 20.8 2.7 17.2 19.5z"/></svg></a>
+                </div>
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+                <div class="share-item qrcode">
+                    <div class="qrcode-container" title="Share via QR Code"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon qrcode-icon"><path d="M0 224h192V32H0v192zM64 96h64v64H64V96zm192-64v192h192V32H256zm128 128h-64V96h64v64zM0 480h192V288H0v192zm64-128h64v64H64v-64zm352-64h32v128h-96v-32h-32v96h-64V288h96v32h64v-32zm0 160h32v32h-32v-32zm-64 0h32v32h-32v-32z"/></svg><div id="qrcode-img"></div>
+                    </div>
+                    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+
+<script>
+    var typeNumber = 0;
+    var errorCorrectionLevel = 'L';
+    var qr = qrcode(typeNumber, errorCorrectionLevel);
+    qr.addData('https:\/\/alexconnat.github.io\/posts\/master-thesis\/');
+    qr.make();
+    document.getElementById('qrcode-img').innerHTML = qr.createImgTag();
+</script>
+
+                </div>
+            
+
+        </div>
+
+    </div>
+
+
+
+
+        
+    
+    
+
+
+
+        
+    
+
+
+
+        
+
+
+        
+
+
+        
+    
+        
+        
+    
+    
+    
+    
+        <ul class="post-nav">
+            
+                <li class="post-nav-prev">
+                    <a href="/posts/move-rootfs-partition-to-usb-drive-on-rpi/" rel="prev">&lt; Tutorial: How to move the rootfs partition on a Raspberry Pi to a USB flash drive</a>
+                </li>
+            
+            
+        </ul>
+    
+
+
+
+        
+    
+
+        <div class="load-comments">
+            <div id="load-comments">Load Comments?</div>
+        </div>
+
+        
+
+        
+
+        
+
+    
+
+
+
+    </div>
+</main>
+
+
+            
+    <div id="back-to-top" class="back-to-top">
+        <a href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icon arrow-up"><path d="M34.9 289.5l-22.2-22.2c-9.4-9.4-9.4-24.6 0-33.9L207 39c9.4-9.4 24.6-9.4 33.9 0l194.3 194.3c9.4 9.4 9.4 24.6 0 33.9L413 289.4c-9.5 9.5-25 9.3-34.3-.4L264 168.6V456c0 13.3-10.7 24-24 24h-32c-13.3 0-24-10.7-24-24V168.6L69.2 289.1c-9.3 9.8-24.8 10-34.3.4z"/></svg></a>
+    </div>
+
+
+            
+    <footer id="footer" class="footer">
+        <div class="footer-inner">
+            <div class="site-info">©&nbsp;2019–2020&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icon footer-icon"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>&nbsp;Alex Connat</div>
+
+            
+
+
+            
+        </div>
+    </footer>
+
+
+        </div>
+        <script src="/js/meme.min.c246493bcf02320be52caad7029d3dbe5c2faf9c2a0d683574f7310da4275f10.js" integrity="sha256-wkZJO88CMgvlLKrXAp09vlwvr5wqDWg1dPcxDaQnXxA="></script>
+
+
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
+
+<script>
+    var scroll = new SmoothScroll('a[href*="#"]', {
+        speedAsDuration: true,
+        header: '[data-scroll-header]'
+    });
+</script>
+
+
+
+
+
+
+    <script>
+    if (typeof MathJax === 'undefined') {
+        window.MathJax = {
+            loader: {
+                load: ['[tex]/mhchem']
+            },
+            
+            tex: {
+                inlineMath: {'[+]': [['$', '$']]},
+                tags: 'ams',
+                packages: {'[+]': ['mhchem']}
+            }
+        };
+        (function() {
+            var script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js';
+            script.defer = true;
+            document.head.appendChild(script);
+        })();
+    } else {
+        MathJax.texReset();
+        MathJax.typeset();
+    }
+</script>
+
+
+
+
+
+
+    
+
+        
+
+        
+
+        
+
+    
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/medium-zoom@latest/dist/medium-zoom.min.js"></script>
+
+<script>
+    mediumZoom(document.querySelectorAll('div.post-body img'), {
+        background: 'hsla(var(--color-bg-h), var(--color-bg-s), var(--color-bg-l), 0.95)'
+    })
+</script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/instant.page@3.0.0/instantpage.min.js" type="module" defer></script>
+
+
+
+
+
+
+
+
+
+
+    </body>
+</html>
